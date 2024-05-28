@@ -67,7 +67,6 @@ public class Constants {
       public static final double kD = 0;
       public static final double kFF = 1 / SwerveCalculations.kDriveWheelFreeSpeedRps;
     }
-
     public static final class TurningPID {
       public static final double kP = 0;
       public static final double kI = 0;
@@ -80,5 +79,20 @@ public class Constants {
 
     // go from rotations or rotations per minute to meters or meters per second
     public static final double kDrivingEncoderPositionFactor = SwerveCalculations.kDrivingEncoderPositionFactor;
+  }
+
+  public static final class AutoConstants {
+    public static final Measure<Velocity<Distance>> kMaxSpeed = Units.MetersPerSecond.of(4.5);
+
+    public static final class DrivingPID {
+      public static final double kP = 0;
+      public static final double kI = 0;
+      public static final double kD = 0;
+    }
+    public static final class TurningPID {
+      public static final double kP = 0;
+      public static final double kI = 0;
+      public static final double kD = 0;
+    }
   }
 }
