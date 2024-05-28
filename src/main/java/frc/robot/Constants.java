@@ -10,7 +10,9 @@ public class Constants {
     public static final Measure<Distance> kTrackWidth = Units.Meters.of(0);
 
     public static final Boolean kGyroReversed = false;
-    
+
+    public static final Boolean kFieldOriented = true;
+
     public static final class CanIDs {
       public static final int kFrontLeftDriving = 3;
       public static final int kBackLeftDriving = 1;
@@ -54,18 +56,22 @@ public class Constants {
 
   public static final class SwerveConstants {
 
-    public static final double kDrivingP = 0;
-    public static final double kDrivingI = 0;
-    public static final double kDrivingD = 0;
-    public static final double kDrivingFF = 1 / SwerveCalculations.kDriveWheelFreeSpeedRps;
+    public static final class DrivingPID {
+      public static final double kP = 0;
+      public static final double kI = 0;
+      public static final double kD = 0;
+      public static final double kFF = 1 / SwerveCalculations.kDriveWheelFreeSpeedRps;
+    }
 
-    public static final double kTurningP = 0;
-    public static final double kTurningI = 0;
-    public static final double kTurningD = 0;
-    public static final double kTurningFF = 0;
+    public static final class TurningPID {
+      public static final double kP = 0;
+      public static final double kI = 0;
+      public static final double kD = 0;
+      public static final double kFF = 0;
+    }
 
-    public static final int kDrivingMotorCurrentLimit = 50;
-    public static final int kTurningMotorCurrentLimit = 20;
+    public static final Measure<Voltage> kDrivingMotorCurrentLimit = Units.Volts.of(50);
+    public static final Measure<Voltage> kTurningMotorCurrentLimit = Units.Volts.of(50);
 
     // go from rotations or rotations per minute to meters or meters per second
     public static final double kDrivingEncoderPositionFactor = SwerveCalculations.kDrivingEncoderPositionFactor;

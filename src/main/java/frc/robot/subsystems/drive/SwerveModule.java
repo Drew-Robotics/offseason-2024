@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -19,14 +18,15 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.StructTopic;
-import edu.wpi.first.units.Units;
+
+import edu.wpi.first.units.*;
+
 import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule {
 
   private SwerveModuleState m_measuredState = new SwerveModuleState();
   private SwerveModuleState m_commandedState = new SwerveModuleState();
-
   private SwerveModulePosition m_measuredPosition = new SwerveModulePosition();
 
   private final CANSparkMax m_driveMotor;
@@ -53,12 +53,13 @@ public class SwerveModule {
   private final StructPublisher<SwerveModulePosition> m_measuredPositionPublisher;
 
   /**
+   * Swerve Module Constructor.
    * 
-   * @param driveMotorCanID
-   * @param turningMotorCanID
-   * @param moduleName
-   * @param angularOffset
-   * @param superTable
+   * @param driveMotorCanID Can ID of the driving Motor
+   * @param turningMotorCanID Can ID of the turning motor
+   * @param moduleName The name of the module. Ex: Front Right, Back Left 
+   * @param angularOffset The angle offset of the module
+   * @param superTable The network table for the module to publish its table under
    */
   public SwerveModule(String moduleName, int driveMotorCanID, int turningMotorCanID, Rotation2d angularOffset, NetworkTable superTable) {
     m_moduleName = moduleName;
@@ -98,33 +99,35 @@ public class SwerveModule {
     // go from rotations or rotations per minute to meters or meters per second
     m_turningEncoder.setPositionConversionFactor(2 * Math.PI);
     m_turningEncoder.setVelocityConversionFactor(2 * Math.PI / 60);
+
     // turning motor must be inverted, output shaft rotates in the opposite direction of turning
     m_turningEncoder.setInverted(true);
 
     // set up pid controllers
-    m_drivingPID.setP(SwerveConstants.kDrivingP);
-    m_drivingPID.setI(SwerveConstants.kDrivingI);
-    m_drivingPID.setD(SwerveConstants.kDrivingD);
-    m_drivingPID.setFF(SwerveConstants.kDrivingFF);
+    m_drivingPID.setP(SwerveConstants.DrivingPID.kP);
+    m_drivingPID.setI(SwerveConstants.DrivingPID.kI);
+    m_drivingPID.setD(SwerveConstants.DrivingPID.kD);
+    m_drivingPID.setFF(SwerveConstants.DrivingPID.kFF);
     m_drivingPID.setOutputRange(-1, 1);
 
-    m_turningPID.setP(SwerveConstants.kTurningP);
-    m_turningPID.setI(SwerveConstants.kTurningI);
-    m_turningPID.setD(SwerveConstants.kTurningD);
-    m_turningPID.setFF(SwerveConstants.kTurningFF);
+    m_turningPID.setP(SwerveConstants.TurningPID.kP);
+    m_turningPID.setI(SwerveConstants.TurningPID.kI);
+    m_turningPID.setD(SwerveConstants.TurningPID.kD);
+    m_turningPID.setFF(SwerveConstants.TurningPID.kFF);
     m_turningPID.setOutputRange(-1, 1);
 
     // current limits
-    m_driveMotor.setSmartCurrentLimit(SwerveConstants.kDrivingMotorCurrentLimit);
-    m_turningMotor.setSmartCurrentLimit(SwerveConstants.kTurningMotorCurrentLimit);
+    m_driveMotor.setSmartCurrentLimit((int) SwerveConstants.kDrivingMotorCurrentLimit.in(Units.Volts));
+    m_turningMotor.setSmartCurrentLimit((int) SwerveConstants.kTurningMotorCurrentLimit.in(Units.Volts));
 
     m_driveMotor.burnFlash();
     m_turningMotor.burnFlash();
   }
 
   /**
+   * Get the the state of the module. Encodes driving velocity and turning angle.
    * 
-   * @return
+   * @return Module State
    */
   public SwerveModuleState getModuleState() {
     SwerveModuleState moduleState = new SwerveModuleState(
@@ -139,8 +142,9 @@ public class SwerveModule {
   }
 
   /**
+   * Command a module state. Param encodes driving velocity and turning angle.
    * 
-   * @param moduleState
+   * @param moduleState Module State
    */
   public void setModuleState(SwerveModuleState moduleState) {
     SwerveModuleState correctedState = new SwerveModuleState(
@@ -148,7 +152,7 @@ public class SwerveModule {
       moduleState.angle.plus(m_angularOffset)
     );
 
-    // avoid spin more than 90 degrees
+    // avoid spining more than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedState, new Rotation2d(m_turningEncoder.getPosition()));
 
     m_drivingPID.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
@@ -160,8 +164,9 @@ public class SwerveModule {
   }
 
   /**
+   * Gets the modules position object. Encodes driving distance and turning angle.
    * 
-   * @return
+   * @return Module Position
    */
   public SwerveModulePosition getModulePosition() {
     SwerveModulePosition modulePosition = new SwerveModulePosition(
