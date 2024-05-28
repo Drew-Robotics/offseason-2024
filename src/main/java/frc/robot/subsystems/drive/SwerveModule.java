@@ -68,11 +68,11 @@ public class SwerveModule {
 
     m_moduleTable = superTable.getSubTable(m_moduleName);
 
-    m_measuredStateTopic = m_moduleTable.getStructTopic("Measured State", SwerveModuleState.struct);
+    m_measuredStateTopic = m_moduleTable.getStructTopic("SwerveModules/" + moduleName + "/Measured State", SwerveModuleState.struct);
     m_measuredStatePublisher = m_measuredStateTopic.publish();
-    m_commandedStateTopic = m_moduleTable.getStructTopic("Commanded State", SwerveModuleState.struct);
+    m_commandedStateTopic = m_moduleTable.getStructTopic("SwerveModules/" + moduleName + "/Commanded State", SwerveModuleState.struct);
     m_commandedStatePublisher = m_commandedStateTopic.publish();
-    m_measuredPositionTopic = m_moduleTable.getStructTopic("Measured Position", SwerveModulePosition.struct);
+    m_measuredPositionTopic = m_moduleTable.getStructTopic("SwerveModules/" + moduleName + "/Measured Position", SwerveModulePosition.struct);
     m_measuredPositionPublisher = m_measuredPositionTopic.publish();
 
     m_driveMotor = new CANSparkMax(driveMotorCanID, MotorType.kBrushless);

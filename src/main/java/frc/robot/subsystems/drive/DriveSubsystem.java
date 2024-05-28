@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import com.kauailabs.navx.frc.AHRS;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -9,6 +10,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,16 +21,21 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.networktables.StructTopic;
 
 import edu.wpi.first.units.*;
+
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
 
-  private final NetworkTable m_swerveTable;
+  private final NetworkTable m_table;
   private final AHRS m_gyro;
 
   private boolean m_isFieldOriented = DriveConstants.kFieldOriented;
@@ -52,6 +59,33 @@ public class DriveSubsystem extends SubsystemBase {
   private Measure<Velocity<Distance>> m_yVelocity = Units.MetersPerSecond.of(0);
   private Measure<Velocity<Angle>> m_rotationalVelocity = Units.RadiansPerSecond.of(0);
 
+  private DriveSubsystemLogger m_driveSubsystemLogger;
+  private class DriveSubsystemLogger {
+
+    private final StructTopic<Pose2d> poseEstimTopic = m_table.getStructTopic("PoseEstimation", Pose2d.struct);
+    private final StructPublisher<Pose2d> poseEstimPublisher = poseEstimTopic.publish();
+
+    private final StructTopic<Pose2d> visionPoseEstimTopic = m_table.getStructTopic("VisionPoesEstimation", Pose2d.struct);;
+    private final StructPublisher<Pose2d> visionPoseEstimPublisher = visionPoseEstimTopic.publish();
+
+    private final StructTopic<ChassisSpeeds> commandedChassisSpeedsTopic = m_table.getStructTopic("CommandedChassisSpeeds", ChassisSpeeds.struct);
+    private final StructPublisher<ChassisSpeeds> commandedChassisSpeedsPublisher = commandedChassisSpeedsTopic.publish();
+
+    private final StructTopic<ChassisSpeeds> measuredChassisSpeedsTopic = m_table.getStructTopic("MeasuredChassisSpeeds", ChassisSpeeds.struct);
+    private final StructPublisher<ChassisSpeeds> measuredChassisSpeedsPublisher = measuredChassisSpeedsTopic.publish();
+
+    private final DoubleTopic gyroYawTopic = m_table.getDoubleTopic("GyroYawRotations");
+    private final DoublePublisher gyroYawPublisher = gyroYawTopic.publish();
+
+    public void publish() {
+      poseEstimPublisher.set(getPose());
+      visionPoseEstimPublisher.set(null);
+      commandedChassisSpeedsPublisher.set(new ChassisSpeeds(m_xVelocity, m_yVelocity, m_rotationalVelocity));
+      measuredChassisSpeedsPublisher.set(getChassisSpeeds());
+      gyroYawPublisher.set(getGyroYaw().getRotations());
+    }
+  }
+
   private static DriveSubsystem m_instance;
   public static DriveSubsystem getInstance() {
     if (m_instance == null)
@@ -60,7 +94,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   protected DriveSubsystem() {
-    m_swerveTable = NetworkTableInstance.getDefault().getTable("Swerve");
+    m_table = NetworkTableInstance.getDefault().getTable(getName());
     m_gyro = new AHRS(SerialPort.Port.kMXP, AHRS.SerialDataType.kProcessedData, (byte) 50);
 
     m_frontLeft = new SwerveModule(
@@ -68,14 +102,14 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.CanIDs.kFrontLeftDriving,
       DriveConstants.CanIDs.kFrontLeftTurning,
       DriveConstants.AngularOffsets.kFrontLeft,
-      m_swerveTable
+      m_table
     );
     m_frontRight = new SwerveModule(
       "Front Right",
       DriveConstants.CanIDs.kFrontRightDriving,
       DriveConstants.CanIDs.kFrontRightTurning,
       DriveConstants.AngularOffsets.kFrontRight,
-      m_swerveTable
+      m_table
 
     );
     m_backLeft = new SwerveModule(
@@ -83,14 +117,14 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.CanIDs.kBackLeftDriving,
       DriveConstants.CanIDs.kBackLeftTurning,
       DriveConstants.AngularOffsets.kBackLeft,
-      m_swerveTable
+      m_table
     );
     m_backRight = new SwerveModule(
       "Back Right",
       DriveConstants.CanIDs.kBackRightDriving,
       DriveConstants.CanIDs.kBackRightTurning,
       DriveConstants.AngularOffsets.kBackRight,
-      m_swerveTable
+      m_table
     );
 
     m_modules = new SwerveModule[] {m_frontLeft, m_frontRight, m_backLeft, m_backRight};
@@ -109,11 +143,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_rotationLimiter = new SlewRateLimiter(DriveConstants.SlewRate.kRot);
 
     plathPlannerConfig();
+    m_driveSubsystemLogger = new DriveSubsystemLogger();
   }
+
 
   @Override
   public void periodic() {
     m_poseEstimator.update(getGyroYaw(), getModulePositions());
+    m_driveSubsystemLogger.publish();
   }
 
   /**
@@ -196,6 +233,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param chassisSpeeds
    */
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+
     SwerveModuleState[] swerveModuleStates = m_driveKinematics.toSwerveModuleStates(chassisSpeeds);
     setModuleStates(swerveModuleStates);
   }
@@ -254,9 +292,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     double xv, yv, rv, mv, dv;
   
-    xv = m_xVelocity.in(Units.MetersPerSecond);
-    yv = m_yVelocity.in(Units.MetersPerSecond);
-    rv = m_rotationalVelocity.in(Units.RadiansPerSecond);
+    xv = DriveConstants.MaxVels.kTranslationalVelocity.times(x).in(Units.MetersPerSecond);
+    yv = DriveConstants.MaxVels.kTranslationalVelocity.times(y).in(Units.MetersPerSecond);
+    rv = DriveConstants.MaxVels.kRotationalVelocity.times(rot).in(Units.RadiansPerSecond);
 
     mv = Math.sqrt(Math.pow(xv, 2) + Math.pow(yv, 2));
     dv = Math.atan2(yv, xv);
