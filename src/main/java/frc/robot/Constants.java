@@ -34,6 +34,11 @@ public class Constants {
       public static final Measure<Velocity<Distance>> kTranslationalVelocity = Units.MetersPerSecond.of(1);
       public static final Measure<Velocity<Angle>> kRotationalVelocity = Units.RadiansPerSecond.of(1);
     }
+    public static final class SlewRate {
+      public static final double kMag = 2;
+      public static final double kDir = 2;
+      public static final double kRot = 2;
+    }
   }
 
   public static final class SwerveCalculations {
