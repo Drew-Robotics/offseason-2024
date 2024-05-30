@@ -20,22 +20,18 @@ public class DriverController extends Controller{
   }
 
   public double getXVelocity(){
-    return -MathUtil.applyDeadband(this.getLeftY(), OIConstants.DriverController.kDriveDeadband);
+    return -MathUtil.applyDeadband(getLeftY(), OIConstants.DriverController.kDriveDeadband);
   }
 
   public double getYVelocity(){
-    return -MathUtil.applyDeadband(this.getLeftX(), OIConstants.DriverController.kDriveDeadband);
+    return -MathUtil.applyDeadband(getLeftX(), OIConstants.DriverController.kDriveDeadband);
   }
 
   public double getRotationalVelocity(){
-    return -MathUtil.applyDeadband(this.getRightX(), OIConstants.DriverController.kDriveDeadband);
+    return -MathUtil.applyDeadband(getRightX(), OIConstants.DriverController.kDriveDeadband);
   }
 
   public Trigger getTurnToZeroButton(){
     return y();
-  }
-
-  public Trigger getStopButton(){
-    return rightBumper();
   }
 }
