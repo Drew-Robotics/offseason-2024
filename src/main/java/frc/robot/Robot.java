@@ -4,19 +4,22 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer.subsystems;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private final RobotContainer m_robotContainer = RobotContainer.getInstance();
 
   @Override
-  public void robotInit() {
-    m_robotContainer = new RobotContainer();
-  }
+  public void robotInit() {}
 
   @Override
   public void robotPeriodic() {
@@ -52,6 +55,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    String autoName = m_robotContainer.getAutonomousCommand().getName();
+    Pose2d startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+
+    subsystems.drive.setGyroOffset(startingPose.getRotation());
   }
 
   @Override

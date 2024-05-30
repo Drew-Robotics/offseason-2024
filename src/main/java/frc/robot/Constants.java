@@ -1,17 +1,38 @@
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.*;
 
 public class Constants {
   public static final class DriveConstants {
 
-    public static final Measure<Distance> kWheelBase = Units.Meters.of(0);
-    public static final Measure<Distance> kTrackWidth = Units.Meters.of(0);
+    public static final Measure<Distance> kWheelBase = Units.Inches.of(24.5);
+    public static final Measure<Distance> kTrackWidth = Units.Inches.of(24.5);
 
-    public static final Boolean kGyroReversed = false;
+    public static final Boolean kGyroReversed = true;
 
-    public static final Boolean kFieldOriented = true;
+    public static final Boolean kFieldOriented = false;
+
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+      new Translation2d(DriveConstants.kWheelBase.divide(2), DriveConstants.kTrackWidth.divide(2)),
+      new Translation2d(DriveConstants.kWheelBase.divide(2), DriveConstants.kTrackWidth.divide(2).negate()),
+      new Translation2d(DriveConstants.kWheelBase.divide(2).negate(), DriveConstants.kTrackWidth.divide(2)),
+      new Translation2d(DriveConstants.kWheelBase.divide(2).negate(), DriveConstants.kTrackWidth.divide(2).negate())
+    );
 
     public static final class CanIDs {
       public static final int kFrontLeftDriving = 3;
@@ -31,8 +52,8 @@ public class Constants {
       public static final Rotation2d kBackRight = new Rotation2d(Math.PI / 2);
     }
     public static final class MaxVels {
-      public static final Measure<Velocity<Distance>> kTranslationalVelocity = Units.MetersPerSecond.of(1);
-      public static final Measure<Velocity<Angle>> kRotationalVelocity = Units.RadiansPerSecond.of(1);
+      public static final Measure<Velocity<Distance>> kTranslationalVelocity = Units.MetersPerSecond.of(4.5);
+      public static final Measure<Velocity<Angle>> kRotationalVelocity = Units.RadiansPerSecond.of(2 * Math.PI);
     }
     public static final class SlewRate {
       public static final double kMag = 2;
@@ -93,6 +114,41 @@ public class Constants {
       public static final double kP = 0;
       public static final double kI = 0;
       public static final double kD = 0;
+    }
+  }
+
+  public static final class VisionConstants {
+
+    public static final class CameraNames {
+      public static final String kFrontLeft = "frontLeft";
+      public static final String kFrontRight = "frontRight";
+      public static final String kBackLeft = "backLeft";
+      public static final String kBackRight = "backRight";
+    }
+    public static final class CameraTransforms {
+      public static final Transform3d kFrontLeft = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
+      public static final Transform3d kFrontRight = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
+      public static final Transform3d kBackLeft = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
+      public static final Transform3d kBackRight = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
+    }
+    
+    public static final class AprilTags {
+    public static final List<AprilTag> kTags = List.of(
+      new AprilTag(1, new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)))
+    );
+    }
+    public static final AprilTagFieldLayout kAprilTagLayout = new AprilTagFieldLayout(AprilTags.kTags, 10, 10);
+
+    public static final class StdDevs {
+      public static final Matrix<N3, N1> kSingleTag = VecBuilder.fill(4, 4, 8);
+      public static final Matrix<N3, N1> kMultipleTags = VecBuilder.fill(0.5, 0.5, 1);
+    }
+  }
+
+  public static final class OIConstants {
+    public static final class DriverController {
+      public static final int kPort = 0;
+      public static final double kDriveDeadband = 0.05;
     }
   }
 }

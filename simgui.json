@@ -1,0 +1,39 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [6]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Chooser": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "DriveSubsystem": {
+        "ChassisSpeeds##v_/DriveSubsystem/MeasuredChassisSpeeds": {
+          "open": true
+        },
+        "SwerveModules": {
+          "Front Right": {
+            "Front RightSwerveModules": {
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}
