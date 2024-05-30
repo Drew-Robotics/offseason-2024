@@ -6,9 +6,14 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.networktables.StringTopic;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+
 import frc.robot.commands.DriveCommand;
 import frc.robot.controllers.DriverController;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -38,7 +43,7 @@ public class RobotContainer {
     subsystems.drive.plathPlannerConfig();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    // autoChooser.setDefaultOption("DefaultAuto", AutoBuilder.buildAuto("DefaultAuto"));
+    autoChooser.setDefaultOption("DefaultAuto", AutoBuilder.buildAuto("DefaultAuto"));
 
     configureBindings();
   }
@@ -50,10 +55,16 @@ public class RobotContainer {
         controllers.driver::getYVelocity, 
         controllers.driver::getRotationalVelocity)
     );
-    
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+
+  public String getAutonomousName() {
+    StringTopic activeAutoTopic = NetworkTableInstance.getDefault().getStringTopic("/SmartDashboard/Auto Chooser/active");
+    String activeAutoName = activeAutoTopic.getEntry("defaultValue", PubSubOption.sendAll(false)).get();
+  
+    return activeAutoName;
   }
 }

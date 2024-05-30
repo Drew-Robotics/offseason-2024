@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotContainer.subsystems;
-import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -56,7 +55,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    String autoName = m_robotContainer.getAutonomousCommand().getName();
+    String autoName = m_robotContainer.getAutonomousName();
+    System.out.println(autoName + " this is a test i want to make this message long so its eaiser to find so ima just keep typing and typing");
     Pose2d startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
     subsystems.drive.setGyroOffset(startingPose.getRotation());

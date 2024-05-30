@@ -25,7 +25,7 @@ public class Constants {
 
     public static final Boolean kGyroReversed = true;
 
-    public static final Boolean kFieldOriented = false;
+    public static final Boolean kFieldOriented = true;
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(DriveConstants.kWheelBase.divide(2), DriveConstants.kTrackWidth.divide(2)),

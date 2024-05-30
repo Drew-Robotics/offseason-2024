@@ -145,7 +145,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // m_poseEstimator.update(getGyroYaw(), getModulePositions());
+    m_poseEstimator.update(getGyroYaw(), getModulePositions());
     m_driveSubsystemLogger.publishPeriodic();
   }
 
@@ -326,7 +326,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot The rotational velocity, unitless on the range -1 to 1
    */
   public void drive(double x, double y, double rot) {
-    
+
     x = Math.max(-1, Math.min(1, x));
     y = Math.max(-1, Math.min(1, y));
     rot = Math.max(-1, Math.min(1, rot));
