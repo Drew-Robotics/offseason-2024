@@ -157,5 +157,8 @@ public class Constants {
 
   public static final class LEDConstants {
     public static final int kCANdleID = 50;
+    public static final int kExtraLight = 0;
+    public static final int kNumOfLEDs = 25;
+
   }
 }

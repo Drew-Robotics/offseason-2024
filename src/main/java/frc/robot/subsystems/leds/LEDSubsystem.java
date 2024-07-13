@@ -10,7 +10,7 @@ import com.ctre.phoenix.led.CANdle;
 
 public class LEDSubsystem extends SubsystemBase {
 
-  private final CANdle m_candle = new CANdle(Constants.LEDConstants.kCANdleID);
+  private final CANdle m_candle = new CANdle(Constants.LEDConstants.kCANdleID, "rio");
 
   private static LEDSubsystem m_instance;
 
@@ -22,7 +22,11 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   /** Creates a new LedSubsystem. */
-  public LEDSubsystem() {}
+  public LEDSubsystem() {
+    // add NetworkTables/Smartdashboard
+      // Temprature 
+    
+  }
 
   @Override
   public void periodic() {
