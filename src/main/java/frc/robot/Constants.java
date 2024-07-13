@@ -35,7 +35,6 @@ public class Constants {
     );
 
     public static final class CanIDs {
-      // Drive Subysestem
       public static final int kFrontLeftDriving = 3;
       public static final int kBackLeftDriving = 1;
       public static final int kFrontRightDriving = 7;
@@ -45,9 +44,6 @@ public class Constants {
       public static final int kBackLeftTurning = 2;
       public static final int kFrontRightTurning = 8;
       public static final int kBackRightTurning = 6;
-
-      // CANdle
-      public static final int kCANdle = 50;
     }
 
     public static final class AngularOffsets {
@@ -157,5 +153,9 @@ public class Constants {
       public static final int kPort = 0;
       public static final double kDriveDeadband = 0.05;
     }
+  }
+
+  public static final class LEDConstants {
+    public static final int kCANdleID = 50;
   }
 }
