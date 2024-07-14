@@ -23,9 +23,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   /** Creates a new LedSubsystem. */
   public LEDSubsystem() {
-    // add NetworkTables/Smartdashboard
-      // Temprature 
-    
+    // add LED Temprature to Smartdashboard
   }
 
   @Override
