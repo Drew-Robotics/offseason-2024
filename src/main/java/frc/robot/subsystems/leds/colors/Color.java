@@ -2,23 +2,12 @@ package frc.robot.subsystems.leds.colors;
 
 public class Color {
     private int m_r, m_g, m_b;
-    private int m_priority;
     private HSV m_HSV;
 
     public Color(int r, int g, int b) {
         m_r = r;
         m_g = g;
         m_b = b;
-        m_priority = 1;
-
-        m_HSV = new HSV(r, g, b);
-    }
-
-    public Color(int r, int g, int b, int priority) {
-        m_r = r;
-        m_g = g;
-        m_b = b;
-        m_priority = priority;
 
         m_HSV = new HSV(r, g, b);
     }
@@ -88,6 +77,4 @@ public class Color {
     public double getH() { return m_HSV.getH(); };
     public double getS() { return m_HSV.getS(); };
     public double getV() { return m_HSV.getV(); };
-
-    public int getPriority() { return m_priority; };
 }

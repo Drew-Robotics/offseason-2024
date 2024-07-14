@@ -18,7 +18,7 @@ public class Gradient {
         m_range = to - from;
     }
 
-    public double lerp(double num1, double num2, double value) {
+    private double lerp(double num1, double num2, double value) {
         return num1 + (num2 - num1) * value;
     }
 
