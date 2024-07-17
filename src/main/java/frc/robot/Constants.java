@@ -154,11 +154,4 @@ public class Constants {
       public static final double kDriveDeadband = 0.05;
     }
   }
-
-  public static final class LEDConstants {
-    public static final int kCANdleID = 50;
-    public static final int kExtraLight = 0;
-    public static final int kNumOfLEDs = 25;
-
-  }
 }
