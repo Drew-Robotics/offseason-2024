@@ -45,16 +45,19 @@ public class Constants {
       public static final int kFrontRightTurning = 8;
       public static final int kBackRightTurning = 6;
     }
+
     public static final class AngularOffsets {
       public static final Rotation2d kFrontLeft = new Rotation2d(-Math.PI / 2);
       public static final Rotation2d kFrontRight = new Rotation2d(0);
       public static final Rotation2d kBackLeft = new Rotation2d(Math.PI);
       public static final Rotation2d kBackRight = new Rotation2d(Math.PI / 2);
     }
+
     public static final class MaxVels {
       public static final Measure<Velocity<Distance>> kTranslationalVelocity = Units.MetersPerSecond.of(4.5);
       public static final Measure<Velocity<Angle>> kRotationalVelocity = Units.RadiansPerSecond.of(2 * Math.PI);
     }
+
     public static final class SlewRate {
       public static final double kMag = 2;
       public static final double kDir = 2;

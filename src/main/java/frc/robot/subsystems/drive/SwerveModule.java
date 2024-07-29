@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drive;
 
-
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.SparkPIDController;
 
 import com.revrobotics.AbsoluteEncoder;
@@ -29,8 +28,8 @@ public class SwerveModule {
   private SwerveModuleState m_commandedState = new SwerveModuleState();
   private SwerveModulePosition m_measuredPosition = new SwerveModulePosition();
 
-  private final CANSparkMax m_driveMotor;
-  private final CANSparkMax m_turningMotor;
+  private final CANSparkFlex m_driveMotor;
+  private final CANSparkFlex m_turningMotor;
 
   private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
@@ -75,8 +74,8 @@ public class SwerveModule {
     m_measuredPositionTopic = m_moduleTable.getStructTopic(moduleName + " Measured Position", SwerveModulePosition.struct);
     m_measuredPositionPublisher = m_measuredPositionTopic.publish();
 
-    m_driveMotor = new CANSparkMax(driveMotorCanID, MotorType.kBrushless);
-    m_turningMotor = new CANSparkMax(turningMotorCanID, MotorType.kBrushless);
+    m_driveMotor = new CANSparkFlex(driveMotorCanID, MotorType.kBrushless);
+    m_turningMotor = new CANSparkFlex(turningMotorCanID, MotorType.kBrushless);
 
     m_driveMotor.restoreFactoryDefaults();
     m_turningMotor.restoreFactoryDefaults();
@@ -155,8 +154,8 @@ public class SwerveModule {
     // avoid spining more than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedState, new Rotation2d(m_turningEncoder.getPosition()));
 
-    m_drivingPID.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
-    m_turningPID.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
+    m_drivingPID.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkFlex.ControlType.kVelocity);
+    m_turningPID.setReference(optimizedDesiredState.angle.getRadians(), CANSparkFlex.ControlType.kPosition);
 
     m_commandedState = moduleState;
 
