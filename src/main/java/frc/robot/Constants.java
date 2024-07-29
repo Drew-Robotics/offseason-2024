@@ -86,16 +86,16 @@ public class Constants {
   public static final class SwerveConstants {
 
     public static final class DrivingPID {
-      public static final double kP = 0;
+      public static final double kP = 1;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kFF = 1 / SwerveCalculations.kDriveWheelFreeSpeedRps;
     }
     public static final class TurningPID {
-      public static final double kP = 0;
+      public static final double kP = 1;
       public static final double kI = 0;
       public static final double kD = 0;
-      public static final double kFF = 0;
+      public static final double kFF = 0.5;
     }
 
     public static final Measure<Voltage> kDrivingMotorCurrentLimit = Units.Volts.of(50);
