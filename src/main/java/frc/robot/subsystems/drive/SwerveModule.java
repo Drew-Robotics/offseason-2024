@@ -30,7 +30,7 @@ public class SwerveModule {
   private SwerveModulePosition m_measuredPosition = new SwerveModulePosition();
 
   private final CANSparkFlex m_driveMotor;
-  private final CANSparkMax m_turningMotor;
+  public final CANSparkMax m_turningMotor;
 
   private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
@@ -45,6 +45,9 @@ public class SwerveModule {
 
   private final StructTopic<SwerveModuleState> m_measuredStateTopic;
   private final StructPublisher<SwerveModuleState> m_measuredStatePublisher;
+
+  private final StructTopic<SwerveModuleState> m_commandedPreOpStateTopic;
+  private final StructPublisher<SwerveModuleState> m_commandedPreOpStatePublisher;
 
   private final StructTopic<SwerveModuleState> m_commandedStateTopic;
   private final StructPublisher<SwerveModuleState> m_commandedStatePublisher;
@@ -70,8 +73,13 @@ public class SwerveModule {
 
     m_measuredStateTopic = m_moduleTable.getStructTopic(moduleName + " Measured State", SwerveModuleState.struct);
     m_measuredStatePublisher = m_measuredStateTopic.publish();
+
+    m_commandedPreOpStateTopic = m_moduleTable.getStructTopic(moduleName + " Commanded State Pre Optimization", SwerveModuleState.struct);
+    m_commandedPreOpStatePublisher = m_commandedPreOpStateTopic.publish();
+
     m_commandedStateTopic = m_moduleTable.getStructTopic(moduleName + " Commanded State", SwerveModuleState.struct);
     m_commandedStatePublisher = m_commandedStateTopic.publish();
+
     m_measuredPositionTopic = m_moduleTable.getStructTopic(moduleName + " Measured Position", SwerveModulePosition.struct);
     m_measuredPositionPublisher = m_measuredPositionTopic.publish();
 
@@ -90,7 +98,12 @@ public class SwerveModule {
     m_turningEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
     m_turningPID = m_turningMotor.getPIDController();
     m_turningPID.setFeedbackDevice(m_turningEncoder);
-    m_turningMotor.setIdleMode(IdleMode.kBrake);
+
+    m_turningPID.setPositionPIDWrappingEnabled(true);
+    m_turningPID.setPositionPIDWrappingMinInput(0);
+    m_turningPID.setPositionPIDWrappingMaxInput(2 * Math.PI);
+
+    m_turningMotor.setIdleMode(IdleMode.kCoast);
 
     // go from rotations or rotations per minute to meters or meters per second
     m_drivingEncoder.setPositionConversionFactor(SwerveConstants.kDrivingEncoderPositionFactor);
@@ -132,13 +145,17 @@ public class SwerveModule {
   public SwerveModuleState getModuleState() {
     SwerveModuleState moduleState = new SwerveModuleState(
       Units.MetersPerSecond.of(m_drivingEncoder.getVelocity()),
-      new Rotation2d(m_turningEncoder.getPosition()).minus(m_angularOffset)
+      getCurrentAngle()
     );
 
     m_measuredState = moduleState;
 
     m_measuredStatePublisher.set(m_measuredState);
     return m_measuredState;
+  }
+
+  public Rotation2d getCurrentAngle() {
+    return new Rotation2d(m_turningEncoder.getPosition()).minus(m_angularOffset); // module relative -> robot relative
   }
 
   /**
@@ -149,18 +166,20 @@ public class SwerveModule {
   public void setModuleState(SwerveModuleState moduleState) {
     SwerveModuleState correctedState = new SwerveModuleState(
       moduleState.speedMetersPerSecond,
-      moduleState.angle.plus(m_angularOffset)
+      moduleState.angle.plus(m_angularOffset) // robot relative -> module relative
     );
 
-    m_turningMotor.set(1);
+    m_commandedPreOpStatePublisher.set(correctedState);
 
     // avoid spining more than 90 degrees
+    // SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedState, m_commandedState.angle.minus(m_angularOffset)); // module relative -> robot relative
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedState, new Rotation2d(m_turningEncoder.getPosition()));
+    if (m_moduleName == "Front Left")
+      System.out.println(correctedState.angle.minus(new Rotation2d(m_turningEncoder.getPosition())).getDegrees());
+    m_commandedState = optimizedDesiredState;
 
-    m_drivingPID.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkFlex.ControlType.kVelocity);
-    m_turningPID.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
-
-    m_commandedState = moduleState;
+    m_drivingPID.setReference(m_commandedState.speedMetersPerSecond, CANSparkFlex.ControlType.kVelocity);
+    m_turningPID.setReference(m_commandedState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
 
     m_commandedStatePublisher.set(m_commandedState);
   }
@@ -173,7 +192,7 @@ public class SwerveModule {
   public SwerveModulePosition getModulePosition() {
     SwerveModulePosition modulePosition = new SwerveModulePosition(
         Units.Meters.of(m_drivingEncoder.getPosition()),
-        new Rotation2d(m_turningEncoder.getPosition()).minus(m_angularOffset)
+        getCurrentAngle()
     );
 
     m_measuredPosition = modulePosition;

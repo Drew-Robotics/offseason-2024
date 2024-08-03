@@ -153,7 +153,6 @@ public class DriveSubsystem extends SubsystemBase {
    * 
    */
   public void plathPlannerConfig() {
-
     double robotRadius = Math.sqrt(
       Math.pow(DriveConstants.kTrackWidth.in(Units.Meters), 2) + 
       Math.pow(DriveConstants.kWheelBase.in(Units.Meters), 2)
@@ -279,7 +278,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param chassisSpeeds
    */
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
-
     SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
     setModuleStates(swerveModuleStates);
   }

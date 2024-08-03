@@ -35,15 +35,15 @@ public class Constants {
     );
 
     public static final class CanIDs {
-      public static final int kFrontLeftDriving = 3;
-      public static final int kBackLeftDriving = 1;
-      public static final int kFrontRightDriving = 7;
-      public static final int kBackRightDriving = 5;
+      public static final int kFrontLeftDriving = 1;
+      public static final int kBackLeftDriving = 5;
+      public static final int kFrontRightDriving = 3;
+      public static final int kBackRightDriving = 7;
 
-      public static final int kFrontLeftTurning = 4;
-      public static final int kBackLeftTurning = 2;
-      public static final int kFrontRightTurning = 8;
-      public static final int kBackRightTurning = 6;
+      public static final int kFrontLeftTurning = 2;
+      public static final int kBackLeftTurning = 6;
+      public static final int kFrontRightTurning = 4;
+      public static final int kBackRightTurning = 8;
     }
 
     public static final class AngularOffsets {
@@ -86,7 +86,7 @@ public class Constants {
   public static final class SwerveConstants {
 
     public static final class DrivingPID {
-      public static final double kP = 1;
+      public static final double kP = 0.05;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kFF = 1 / SwerveCalculations.kDriveWheelFreeSpeedRps;
@@ -95,11 +95,11 @@ public class Constants {
       public static final double kP = 1;
       public static final double kI = 0;
       public static final double kD = 0;
-      public static final double kFF = 0.5;
+      public static final double kFF = 0;
     }
 
     public static final Measure<Voltage> kDrivingMotorCurrentLimit = Units.Volts.of(50);
-    public static final Measure<Voltage> kTurningMotorCurrentLimit = Units.Volts.of(50);
+    public static final Measure<Voltage> kTurningMotorCurrentLimit = Units.Volts.of(20);
 
     // go from rotations or rotations per minute to meters or meters per second
     public static final double kDrivingEncoderPositionFactor = SwerveCalculations.kDrivingEncoderPositionFactor;
