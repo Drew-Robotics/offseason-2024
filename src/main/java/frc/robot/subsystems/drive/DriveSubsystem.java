@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -141,18 +143,34 @@ public class DriveSubsystem extends SubsystemBase {
     m_rotationLimiter = new SlewRateLimiter(DriveConstants.SlewRate.kRot);
 
     m_driveSubsystemLogger = new DriveSubsystemLogger();
+    dashboardInit();
   }
 
   @Override
   public void periodic() {
     m_poseEstimator.update(getGyroYaw(), getModulePositions());
     m_driveSubsystemLogger.publishPeriodic();
+    dashboardPeriodic();
+    
+  }
+
+  public void dashboardInit() {
+    SmartDashboard.putData("Reset Yaw",
+      new InstantCommand((this::resetGyroYaw), this)
+    );
+  }
+
+  public void dashboardPeriodic() {
+    // NavX
+    SmartDashboard.putBoolean("NavX Connected", m_gyro.isConnected());
+    SmartDashboard.putBoolean("NavX Calibrating", m_gyro.isCalibrating());
+    SmartDashboard.putNumber("Yaw Degrees", getGyroYaw().getDegrees());
   }
 
   /**
    * 
    */
-  public void plathPlannerConfig() {
+  public void pathPlannerConfig() {
     double robotRadius = Math.sqrt(
       Math.pow(DriveConstants.kTrackWidth.in(Units.Meters), 2) + 
       Math.pow(DriveConstants.kWheelBase.in(Units.Meters), 2)
@@ -191,7 +209,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @return Yaw of the Navx Gyro
    */
   public Rotation2d getGyroYaw() {
-    return new Rotation2d(m_gyro.getYaw() * 2 * Math.PI * (DriveConstants.kGyroReversed ? -1.0 : 1.0));
+    Measure<Angle> angleMeasure = Units.Degrees.of(
+      m_gyro.getYaw() * (DriveConstants.kGyroReversed ? -1.0 : 1.0)
+    );
+    return new Rotation2d(angleMeasure);
   }
 
   /**
@@ -363,8 +384,9 @@ public class DriveSubsystem extends SubsystemBase {
     // get chassis speeds
 
     ChassisSpeeds commandedChassisSpeeds;
-    if (m_isFieldOriented)
+    if (m_isFieldOriented){
       commandedChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(m_xVelocity, m_yVelocity, m_rotationalVelocity, getGyroYaw());
+    }
     else
       commandedChassisSpeeds = new ChassisSpeeds(m_xVelocity, m_yVelocity, m_rotationalVelocity);
 

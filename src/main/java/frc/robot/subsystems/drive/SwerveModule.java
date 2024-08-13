@@ -174,8 +174,6 @@ public class SwerveModule {
     // avoid spining more than 90 degrees
     // SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedState, m_commandedState.angle.minus(m_angularOffset)); // module relative -> robot relative
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedState, new Rotation2d(m_turningEncoder.getPosition()));
-    if (m_moduleName == "Front Left")
-      System.out.println(correctedState.angle.minus(new Rotation2d(m_turningEncoder.getPosition())).getDegrees());
     m_commandedState = optimizedDesiredState;
 
     m_drivingPID.setReference(m_commandedState.speedMetersPerSecond, CANSparkFlex.ControlType.kVelocity);

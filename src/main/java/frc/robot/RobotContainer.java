@@ -31,7 +31,6 @@ public class RobotContainer {
     public static final DriverController driver = DriverController.getInstance();
   }
 
-
   private static RobotContainer m_instance;
   public static RobotContainer getInstance() {
     if (m_instance == null)
@@ -40,7 +39,7 @@ public class RobotContainer {
   }
 
   protected RobotContainer() {
-    subsystems.drive.plathPlannerConfig();
+    subsystems.drive.pathPlannerConfig();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoChooser.setDefaultOption("DefaultAuto", AutoBuilder.buildAuto("DefaultAuto"));
