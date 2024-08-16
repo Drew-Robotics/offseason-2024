@@ -12,12 +12,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.*;
 
 public class Constants {
+
+
   public static final class DriveConstants {
 
     public static final Measure<Distance> kWheelBase = Units.Inches.of(24.5);
@@ -129,10 +132,36 @@ public class Constants {
       public static final String kBackRight = "backRight";
     }
     public static final class CameraTransforms {
-      public static final Transform3d kFrontLeft = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
-      public static final Transform3d kFrontRight = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
-      public static final Transform3d kBackLeft = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
-      public static final Transform3d kBackRight = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
+      // Measure from the center line to the camera, not the 3D center of the robot.
+      public static final Measure<Distance> lenghtWidth = Units.Inches.of(14);
+      public static final Measure<Distance> height = Units.Inches.of(8);
+      public static final Measure<Angle> pitch = Units.Degrees.of(-28.125);
+      public static final Measure<Angle> yawOffset = Units.Degrees.of(30);
+
+      public static final Transform3d kFrontLeft = new Transform3d(
+        lenghtWidth.in(Units.Meters),
+        lenghtWidth.in(Units.Meters),
+        height.in(Units.Meters), 
+        new Rotation3d(0, pitch.in(Units.Radians), yawOffset.in(Units.Radians))
+      );
+      public static final Transform3d kFrontRight = new Transform3d(
+        lenghtWidth.in(Units.Meters),
+        -lenghtWidth.in(Units.Meters),
+        height.in(Units.Meters), 
+        new Rotation3d(0, pitch.in(Units.Radians), - yawOffset.in(Units.Radians))
+      );
+      public static final Transform3d kBackLeft = new Transform3d(
+        -lenghtWidth.in(Units.Meters),
+        lenghtWidth.in(Units.Meters),
+        height.in(Units.Meters), 
+        new Rotation3d(0, pitch.in(Units.Radians), Math.PI + yawOffset.in(Units.Radians))
+      );
+      public static final Transform3d kBackRight = new Transform3d(
+        -lenghtWidth.in(Units.Meters),
+        -lenghtWidth.in(Units.Meters),
+        height.in(Units.Meters), 
+        new Rotation3d(0, pitch.in(Units.Radians), Math.PI - yawOffset.in(Units.Radians))
+      );
     }
     
     public static final class AprilTags {
