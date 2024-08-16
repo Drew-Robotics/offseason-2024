@@ -1,6 +1,7 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -22,7 +23,7 @@ public class Controller extends CommandXboxController {
     );
   }
 
-  public FunctionalCommand intakeRumbleCommand() {
+  public Command intakeRumbleCommand() {
     return new FunctionalCommand(
       // init
       () -> setRumble(1),
