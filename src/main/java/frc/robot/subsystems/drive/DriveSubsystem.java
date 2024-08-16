@@ -29,7 +29,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
@@ -46,7 +45,6 @@ import edu.wpi.first.units.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.RobotContainer.controllers;
 import frc.robot.RobotContainer.subsystems;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -151,15 +149,22 @@ public class DriveSubsystem extends SubsystemBase {
     m_poseEstimator.update(getGyroYaw(), getModulePositions());
     m_driveSubsystemLogger.publishPeriodic();
     dashboardPeriodic();
-    
+    updateVisionPoseEstimation();
   }
 
+
+  /**
+   * 
+   */
   public void dashboardInit() {
     SmartDashboard.putData("Reset Yaw",
       new InstantCommand((this::resetGyroYaw), this)
     );
   }
 
+    /**
+     * 
+     */
   public void dashboardPeriodic() {
     // NavX
     SmartDashboard.putBoolean("NavX Connected", m_gyro.isConnected());

@@ -19,7 +19,6 @@ public class VisionSubsystem extends SubsystemBase {
   private final Camera m_frontLeft, m_frontRight, m_backLeft, m_backRight;
   private final List<Camera> m_cameras;
 
-
   private static VisionSubsystem m_instance;
 
   public static VisionSubsystem getInstance() {
@@ -37,12 +36,12 @@ public class VisionSubsystem extends SubsystemBase {
     m_cameras = List.of(m_frontLeft, m_frontRight, m_backLeft, m_backRight);
   }
   public List<Optional<EstimatedRobotPose>> getCameraEstimatedPoses() {
-        List<Optional<EstimatedRobotPose>> retVal = Collections.emptyList();
-        for(Camera camera : m_cameras) {
-            retVal.add(camera.getEstimatedGlobalPose());
-        }
-        return retVal;
-    }
+      List<Optional<EstimatedRobotPose>> retVal = Collections.emptyList();
+      for(Camera camera : m_cameras) {
+          retVal.add(camera.getEstimatedGlobalPose());
+      }
+      return retVal;
+  }
 
     public List<Optional<Matrix<N3, N1>>> getPoseStdDevs(List<Optional<EstimatedRobotPose>> poses) {
         List<Optional<Matrix<N3, N1>>> poseStdDevs = Collections.emptyList();
