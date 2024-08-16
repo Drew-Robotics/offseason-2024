@@ -24,27 +24,27 @@ import frc.robot.Constants.VisionConstants;
 
 public class Camera {
   
-  private final PhotonCamera m_camera;
+  private final PhotonCamera m_photonCamera;
   private final PhotonPoseEstimator m_poseEstimator;
   private double m_lastEstimationTimestamp = 0;
 
   public Camera(String name, Transform3d robotToCamera) {
-    m_camera = new PhotonCamera(name);
+    m_photonCamera = new PhotonCamera(name);
     m_poseEstimator = new PhotonPoseEstimator(
       VisionConstants.kAprilTagLayout,
       PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-      m_camera, robotToCamera
+      m_photonCamera, robotToCamera
     );
   }
 
   public PhotonPipelineResult getLatestResult() {
-    PhotonPipelineResult lastestResult = m_camera.getLatestResult();
+    PhotonPipelineResult lastestResult = m_photonCamera.getLatestResult();
     return lastestResult;
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     Optional<EstimatedRobotPose> visionEst = m_poseEstimator.update();
-    double latestTimestamp = m_camera.getLatestResult().getTimestampSeconds();
+    double latestTimestamp = m_photonCamera.getLatestResult().getTimestampSeconds();
 
     double now = Timer.getFPGATimestamp();
     if (latestTimestamp > now)
@@ -76,19 +76,19 @@ public class Camera {
             avgDist += tagTranslation.getDistance(estimatedPose.getTranslation());
         }
         
-        if (numTags == 0) 
+        if (numTags == 0)
           return estStdDevs;
 
         avgDist /= numTags;
 
-        // decrease std devs if multiple targets are visible
+        // Decrease std devs if multiple targets are visible
         if (numTags > 1)
           estStdDevs = VisionConstants.StdDevs.kMultipleTags;
 
         // Increase std devs based on (average) distance
         if (numTags == 1 && avgDist > 4)
           estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-        else 
+        else
           estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
 
         return estStdDevs;
