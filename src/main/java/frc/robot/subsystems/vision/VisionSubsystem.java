@@ -1,26 +1,32 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.StructArrayPublisher;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
+import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.Subsystem;
 
-public class VisionSubsystem extends SubsystemBase {
+public class VisionSubsystem extends Subsystem {
   private final Camera m_frontLeft, m_frontRight, m_backLeft, m_backRight;
   private final List<Camera> m_cameras;
 
-  private static VisionSubsystem m_instance;
+  private VisionSubsystemLogger m_logger;
+  private class VisionSubsystemLogger {
+    private final StructArrayPublisher<AprilTag> fieldTagsPublisher = m_table.getStructArrayTopic("FieldTags", new AprilTagStruct()).publish();
+    // private final StructArrayPublisher<AprilTag> seenTagsPublisher = m_table.getStructArrayTopic("SeenTags", new AprilTagStruct()).publish();
+  }
 
+  private static VisionSubsystem m_instance;
   public static VisionSubsystem getInstance() {
     if (m_instance == null)
       m_instance = new VisionSubsystem();
@@ -28,34 +34,66 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private VisionSubsystem() {
+    super(VisionSubsystem.class.getSimpleName());
+
     m_frontLeft = new Camera(VisionConstants.CameraNames.kFrontLeft, VisionConstants.CameraTransforms.kFrontLeft);  
     m_frontRight = new Camera(VisionConstants.CameraNames.kFrontRight, VisionConstants.CameraTransforms.kFrontRight);
     m_backLeft = new Camera(VisionConstants.CameraNames.kBackLeft, VisionConstants.CameraTransforms.kBackLeft);
     m_backRight = new Camera(VisionConstants.CameraNames.kBackRight, VisionConstants.CameraTransforms.kBackRight);
 
     m_cameras = List.of(m_frontLeft, m_frontRight, m_backLeft, m_backRight);
+
+    m_logger = new VisionSubsystemLogger();
   }
+
+  /* ----- OVERRIDES ----- */
+
+  @Override
+  public void periodic() {
+    super.periodic();
+  }
+
+  @Override
+  public void dashboardInit() {}
+  @Override
+  public void dashboardPeriodic() {}
+  @Override
+  public void publishInit() {
+    AprilTag[] tags = (AprilTag[]) Constants.VisionConstants.AprilTags.kTags.toArray();
+    m_logger.fieldTagsPublisher.accept(tags);
+  }
+  @Override
+  public void publishPeriodic() {
+    // m_logger.seenTagsPublisher.accept(); // todo : finish this
+  }
+
+  /* ----- VISION ------ */
+
   public List<Optional<EstimatedRobotPose>> getCameraEstimatedPoses() {
-      List<Optional<EstimatedRobotPose>> retVal = Collections.emptyList();
-      for(Camera camera : m_cameras) {
-          retVal.add(camera.getEstimatedGlobalPose());
-      }
-      return retVal;
+    ArrayList<Optional<EstimatedRobotPose>> retVal = new ArrayList<Optional<EstimatedRobotPose>>();
+
+    for(Camera camera : m_cameras) {
+      retVal.add(camera.getEstimatedGlobalPose());
+    }
+    return retVal;
   }
 
     public List<Optional<Matrix<N3, N1>>> getPoseStdDevs(List<Optional<EstimatedRobotPose>> poses) {
-        List<Optional<Matrix<N3, N1>>> poseStdDevs = Collections.emptyList();
+      ArrayList<Optional<Matrix<N3, N1>>> poseStdDevs = new ArrayList<Optional<Matrix<N3, N1>>>();
 
-        for (int cameraIndex = 0; cameraIndex < m_cameras.size(); cameraIndex++) {
-          Camera camera = m_cameras.get(cameraIndex);
-          Pose2d pose = poses.get(cameraIndex).get().estimatedPose.toPose2d();
+      for (int cameraIndex = 0; cameraIndex < m_cameras.size(); cameraIndex++) {
+        Camera camera = m_cameras.get(cameraIndex);
 
-          if(poses.get(cameraIndex).isPresent())
-            poseStdDevs.add(Optional.ofNullable(camera.getEstimationStdDevs(pose)));
-          else
-            poseStdDevs.add(Optional.empty());
-        }
-        return poseStdDevs;
+        Optional<EstimatedRobotPose> poseOptional = poses.get(cameraIndex);
+
+        if(poseOptional.isPresent())
+          poseStdDevs.add(Optional.ofNullable(camera.getEstimationStdDevs(
+            poseOptional.get().estimatedPose.toPose2d()
+          )));
+        else
+          poseStdDevs.add(Optional.empty());
+      }
+      return poseStdDevs;
     }
 
 }

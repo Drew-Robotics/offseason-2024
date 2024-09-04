@@ -166,7 +166,7 @@ public class Constants {
     
     public static final class AprilTags {
     public static final List<AprilTag> kTags = List.of(
-      new AprilTag(1, new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0)))
+      new AprilTag(1, new Pose3d(5, 2, 1, new Rotation3d(0, 0, 180)))
     );
     }
     public static final AprilTagFieldLayout kAprilTagLayout = new AprilTagFieldLayout(AprilTags.kTags, 10, 10);

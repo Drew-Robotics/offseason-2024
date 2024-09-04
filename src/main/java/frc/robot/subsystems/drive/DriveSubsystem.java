@@ -29,28 +29,24 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.networktables.StructTopic;
 
 import edu.wpi.first.units.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.RobotContainer.subsystems;
+import frc.robot.subsystems.Subsystem;
 
-public class DriveSubsystem extends SubsystemBase {
-  private final NetworkTable m_table;
+public class DriveSubsystem extends Subsystem {
   private final AHRS m_gyro;
-
   private boolean m_isFieldOriented = DriveConstants.kFieldOriented;
 
   private final SwerveModule m_frontLeft, m_frontRight, m_backLeft, m_backRight;
@@ -63,31 +59,13 @@ public class DriveSubsystem extends SubsystemBase {
   private Measure<Velocity<Distance>> m_yVelocity = Units.MetersPerSecond.of(0);
   private Measure<Velocity<Angle>> m_rotationalVelocity = Units.RadiansPerSecond.of(0);
 
-  private DriveSubsystemLogger m_driveSubsystemLogger;
+  private DriveSubsystemLogger m_logger;
   private class DriveSubsystemLogger {
-
-    private final StructTopic<Pose2d> poseEstimTopic = m_table.getStructTopic("PoseEstimation", Pose2d.struct);
-    public final StructPublisher<Pose2d> poseEstimPublisher = poseEstimTopic.publish();
-
-    private final StructTopic<Pose2d> visionPoseEstimTopic = m_table.getStructTopic("VisionPoesEstimation", Pose2d.struct);;
-    public final StructPublisher<Pose2d> visionPoseEstimPublisher = visionPoseEstimTopic.publish();
-
-    private final StructTopic<ChassisSpeeds> commandedChassisSpeedsTopic = m_table.getStructTopic("CommandedChassisSpeeds", ChassisSpeeds.struct);
-    public final StructPublisher<ChassisSpeeds> commandedChassisSpeedsPublisher = commandedChassisSpeedsTopic.publish();
-
-    private final StructTopic<ChassisSpeeds> measuredChassisSpeedsTopic = m_table.getStructTopic("MeasuredChassisSpeeds", ChassisSpeeds.struct);
-    public final StructPublisher<ChassisSpeeds> measuredChassisSpeedsPublisher = measuredChassisSpeedsTopic.publish();
-
-    private final DoubleTopic gyroYawTopic = m_table.getDoubleTopic("GyroYawRotations");
-    public final DoublePublisher gyroYawPublisher = gyroYawTopic.publish();
-
-    public void publishPeriodic() {
-      poseEstimPublisher.set(getPose());
-      visionPoseEstimPublisher.set(null);
-      commandedChassisSpeedsPublisher.set(new ChassisSpeeds(m_xVelocity, m_yVelocity, m_rotationalVelocity));
-      measuredChassisSpeedsPublisher.set(getChassisSpeeds());
-      gyroYawPublisher.set(getGyroYaw().getRotations());
-    }
+    private final StructPublisher<Pose2d> poseEstimPublisher = m_table.getStructTopic("PoseEstimation", Pose2d.struct).publish();
+    private final StructPublisher<Pose2d> visionPoseEstimPublisher = m_table.getStructTopic("VisionPoesEstimation", Pose2d.struct).publish(); // todo : get rid of this (janky but useful for debugging)
+    private final StructPublisher<ChassisSpeeds> commandedChassisSpeedsPublisher = m_table.getStructTopic("CommandedChassisSpeeds", ChassisSpeeds.struct).publish();
+    private final StructPublisher<ChassisSpeeds> measuredChassisSpeedsPublisher = m_table.getStructTopic("MeasuredChassisSpeeds", ChassisSpeeds.struct).publish();
+    private final DoublePublisher gyroYawPublisher = m_table.getDoubleTopic("GyroYawRotations").publish();
   }
 
   private static DriveSubsystem m_instance;
@@ -98,7 +76,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   protected DriveSubsystem() {
-    m_table = NetworkTableInstance.getDefault().getTable(getName());
+    super(DriveSubsystem.class.getSimpleName());    
+    m_logger = new DriveSubsystemLogger();
     m_gyro = new AHRS(SerialPort.Port.kMXP, AHRS.SerialDataType.kProcessedData, (byte) 50);
 
     m_frontLeft = new SwerveModule(
@@ -133,43 +112,58 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_modules = new SwerveModule[] {m_frontLeft, m_frontRight, m_backLeft, m_backRight};
 
-
     m_poseEstimator = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics, getGyroYaw(), getModulePositions(), new Pose2d());
 
     m_magnitudeLimiter = new SlewRateLimiter(DriveConstants.SlewRate.kMag);
     m_directionalLimiter = new SlewRateLimiter(DriveConstants.SlewRate.kDir);
     m_rotationLimiter = new SlewRateLimiter(DriveConstants.SlewRate.kRot);
-
-    m_driveSubsystemLogger = new DriveSubsystemLogger();
-    dashboardInit();
   }
+
+  /* ----- OVERRIDES ----- */
 
   @Override
   public void periodic() {
+    super.periodic();
     m_poseEstimator.update(getGyroYaw(), getModulePositions());
-    m_driveSubsystemLogger.publishPeriodic();
-    dashboardPeriodic();
     updateVisionPoseEstimation();
   }
 
-
   /**
-   * 
+   * Run once to initialize
    */
+  @Override
   public void dashboardInit() {
     SmartDashboard.putData("Reset Yaw",
       new InstantCommand((this::resetGyroYaw), this)
     );
   }
 
-    /**
-     * 
-     */
+  /**
+   * 
+   */
+  @Override
   public void dashboardPeriodic() {
     // NavX
     SmartDashboard.putBoolean("NavX Connected", m_gyro.isConnected());
     SmartDashboard.putBoolean("NavX Calibrating", m_gyro.isCalibrating());
     SmartDashboard.putNumber("Yaw Degrees", getGyroYaw().getDegrees());
+  }
+
+  /**
+   * 
+   */
+  @Override
+  protected void publishInit() {}
+
+  /**
+   * 
+   */
+  @Override
+  protected void publishPeriodic() {
+    m_logger.poseEstimPublisher.set(getPose());
+    m_logger.commandedChassisSpeedsPublisher.set(new ChassisSpeeds(m_xVelocity, m_yVelocity, m_rotationalVelocity));
+    m_logger.measuredChassisSpeedsPublisher.set(getChassisSpeeds());
+    m_logger.gyroYawPublisher.set(getGyroYaw().getRotations());
   }
 
   /**
@@ -208,6 +202,8 @@ public class DriveSubsystem extends SubsystemBase {
     );
   }
 
+  /* ------ GYRO ------ */
+
   /**
    * Get the yaw from the Navx gyro.
    * 
@@ -234,6 +230,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void setGyroOffset(Rotation2d offset) {
     m_gyro.setAngleAdjustment(offset.getDegrees());
   }
+
+  /* ----- POSE ESTIMATION ----- */
 
   /**
    * 
@@ -264,7 +262,6 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
     pose = new Pose2d(pose.getTranslation(), pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
-    m_driveSubsystemLogger.visionPoseEstimPublisher.set(pose);
 
     if(pose.getX() < 0 || pose.getY() < 0)
       return;
@@ -281,6 +278,8 @@ public class DriveSubsystem extends SubsystemBase {
   public Pose2d getPose() {
     return m_poseEstimator.getEstimatedPosition();
   }
+
+  /* ----- SWERVE ----- */
 
   /**
    * 
@@ -307,7 +306,6 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
     setModuleStates(swerveModuleStates);
   }
-
 
   /**
    * Sets the states of the modules given an array of module states.
@@ -421,7 +419,7 @@ public class DriveSubsystem extends SubsystemBase {
   //     if (lastTranslationVelMagnitude != 0.0) {
   //       directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_translationVelMagnitude);
   //     } else {
-  //       directionSlewRate = 500.0; //some high number that means the slew rate is effectively instantaneous
+  //       directionSlewRate = 500.0; // Some high number that means the slew rate is effectively instantaneous
   //     }
 
   //     double currentTime = WPIUtilJNI.now() * 1e-6;
