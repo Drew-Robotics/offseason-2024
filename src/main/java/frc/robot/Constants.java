@@ -56,9 +56,17 @@ public class Constants {
       public static final Rotation2d kBackRight = new Rotation2d(Math.PI / 2);
     }
 
-    public static final class MaxVels {
+    public static final class DriveVels {
       public static final Measure<Velocity<Distance>> kTranslationalVelocity = Units.MetersPerSecond.of(4.5);
-      public static final Measure<Velocity<Angle>> kRotationalVelocity = Units.RadiansPerSecond.of(2 * Math.PI);
+      public static final Measure<Velocity<Angle>> kRotationalVelocity = Units.DegreesPerSecond.of(540);
+    }
+
+    public static final class Constraints {
+      public static final Measure<Velocity<Distance>> kTranslationalVelocity = Units.MetersPerSecond.of(4.5);
+      public static final Measure<Velocity<Angle>> kRotationalVelocity = Units.DegreesPerSecond.of(540);
+
+      public static final Measure<Velocity<Velocity<Distance>>> kTranslationalAcceleration = Units.MetersPerSecondPerSecond.of(4.5);
+      public static final Measure<Velocity<Velocity<Angle>>> kRotationalAcceleration = Units.DegreesPerSecond.per(Units.Second).of(720);
     }
 
     public static final class SlewRate {
@@ -166,7 +174,7 @@ public class Constants {
     
     public static final class AprilTags {
     public static final List<AprilTag> kTags = List.of(
-      new AprilTag(1, new Pose3d(5, 2, 1, new Rotation3d(0, 0, 180)))
+      new AprilTag(1, new Pose3d(5, 2, 1.778, new Rotation3d(0, 0, 180)))
     );
     }
     public static final AprilTagFieldLayout kAprilTagLayout = new AprilTagFieldLayout(AprilTags.kTags, 10, 10);

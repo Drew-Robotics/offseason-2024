@@ -8,6 +8,7 @@ import org.photonvision.EstimatedRobotPose;
 import com.kauailabs.navx.frc.AHRS;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -44,8 +45,10 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.RobotContainer.subsystems;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class DriveSubsystem extends Subsystem {
+  private final NetworkTable m_table;
   private final AHRS m_gyro;
   private boolean m_isFieldOriented = DriveConstants.kFieldOriented;
 
@@ -76,7 +79,9 @@ public class DriveSubsystem extends Subsystem {
   }
 
   protected DriveSubsystem() {
-    super(DriveSubsystem.class.getSimpleName());    
+    super(VisionSubsystem.class.getSimpleName());
+    m_table = NetworkTableInstance.getDefault().getTable(DriveSubsystem.class.getSimpleName());
+    
     m_logger = new DriveSubsystemLogger();
     m_gyro = new AHRS(SerialPort.Port.kMXP, AHRS.SerialDataType.kProcessedData, (byte) 50);
 
@@ -202,6 +207,15 @@ public class DriveSubsystem extends Subsystem {
     );
   }
 
+  /**
+   * 
+   * @param path
+   * @return
+   */
+  public Command getPathCommand(PathPlannerPath path) {
+    return AutoBuilder.followPath(path);
+  }
+
   /* ------ GYRO ------ */
 
   /**
@@ -313,7 +327,7 @@ public class DriveSubsystem extends Subsystem {
    * @param swerveModuleStates Array of modules states
    */
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MaxVels.kTranslationalVelocity);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.Constraints.kTranslationalVelocity);
     for (int i = 0; i < 4; i++)
       m_modules[i].setModuleState(swerveModuleStates[i]);
   }
@@ -354,9 +368,9 @@ public class DriveSubsystem extends Subsystem {
     rot = Math.max(-1, Math.min(1, rot));
 
     
-    m_xVelocity = DriveConstants.MaxVels.kTranslationalVelocity.times(x);
-    m_yVelocity = DriveConstants.MaxVels.kTranslationalVelocity.times(y);
-    m_rotationalVelocity = DriveConstants.MaxVels.kRotationalVelocity.times(rot);
+    m_xVelocity = DriveConstants.DriveVels.kTranslationalVelocity.times(x);
+    m_yVelocity = DriveConstants.DriveVels.kTranslationalVelocity.times(y);
+    m_rotationalVelocity = DriveConstants.DriveVels.kRotationalVelocity.times(rot);
 
     // // convert to polar
 

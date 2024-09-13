@@ -4,6 +4,8 @@ import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 
 import java.util.ArrayList;
@@ -15,8 +17,10 @@ import org.photonvision.EstimatedRobotPose;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class VisionSubsystem extends Subsystem {
+  private final NetworkTable m_table;
   private final Camera m_frontLeft, m_frontRight, m_backLeft, m_backRight;
   private final List<Camera> m_cameras;
 
@@ -35,6 +39,7 @@ public class VisionSubsystem extends Subsystem {
 
   private VisionSubsystem() {
     super(VisionSubsystem.class.getSimpleName());
+    m_table = NetworkTableInstance.getDefault().getTable(DriveSubsystem.class.getSimpleName());
 
     m_frontLeft = new Camera(VisionConstants.CameraNames.kFrontLeft, VisionConstants.CameraTransforms.kFrontLeft);  
     m_frontRight = new Camera(VisionConstants.CameraNames.kFrontRight, VisionConstants.CameraTransforms.kFrontRight);
