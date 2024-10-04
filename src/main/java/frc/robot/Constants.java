@@ -183,4 +183,13 @@ public class Constants {
       public static final double kDriveDeadband = 0.05;
     }
   }
+
+  public static final class NotePipeLineConstants {
+    public static final class CANIDs {
+      public static final int kShooterLeft = 0;
+      public static final int kShooterRight = 0;
+      public static final int kIntake = 0;
+      public static final int kFeeder = 0;
+    }
+  }
 }
