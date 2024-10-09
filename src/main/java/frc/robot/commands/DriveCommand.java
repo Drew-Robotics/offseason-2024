@@ -5,7 +5,6 @@ import frc.robot.RobotContainer.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-
 public class DriveCommand extends Command{
   private DoubleSupplier m_xSpeed;
   private DoubleSupplier m_ySpeed;

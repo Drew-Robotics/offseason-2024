@@ -6,7 +6,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import frc.robot.Constants.NotePipeLineConstants.CANIDs;
+import frc.robot.Constants.NotePipelineConstants.CANIDs;
 
 public class Intake {
     private final CANSparkFlex m_intakeMotor;

@@ -182,9 +182,13 @@ public class Constants {
       public static final int kPort = 0;
       public static final double kDriveDeadband = 0.05;
     }
+
+    public static final class OperatorController {
+      public static final int kPort = 1;
+    }
   }
 
-  public static final class NotePipeLineConstants {
+  public static final class NotePipelineConstants {
     public static final class CANIDs {
       public static final int kShooterLeft = 0;
       public static final int kShooterRight = 0;

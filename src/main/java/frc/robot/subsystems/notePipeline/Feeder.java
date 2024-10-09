@@ -6,7 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
-import frc.robot.Constants.NotePipeLineConstants.CANIDs;
+import frc.robot.Constants.NotePipelineConstants.CANIDs;
 
 public class Feeder {
     private final CANSparkFlex m_feederMotor;
