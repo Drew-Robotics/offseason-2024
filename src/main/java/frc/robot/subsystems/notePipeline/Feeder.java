@@ -1,6 +1,9 @@
 package frc.robot.subsystems.notePipeline;
 
 import com.revrobotics.CANSparkBase.ControlType;
+
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -22,5 +25,9 @@ public class Feeder {
 
     public void setMotor(double mps) {
         m_feederPID.setReference(mps, ControlType.kVelocity);
+    }
+
+    public DoubleSupplier getVelocity() {
+        return () -> { return m_feederEncoder.getVelocity(); };
     }
 }

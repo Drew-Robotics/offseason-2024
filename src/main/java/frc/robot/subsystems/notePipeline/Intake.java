@@ -1,5 +1,7 @@
 package frc.robot.subsystems.notePipeline;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -22,5 +24,9 @@ public class Intake {
 
     public void setMotor(double mps) {
         m_intakePID.setReference(mps, ControlType.kVelocity);
+    }
+
+    public DoubleSupplier getVelocity() {
+        return () -> { return m_intakeEncoder.getVelocity(); };
     }
 }

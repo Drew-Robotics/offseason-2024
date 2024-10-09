@@ -1,5 +1,7 @@
 package frc.robot.subsystems.notePipeline;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -32,5 +34,9 @@ public class Shooter {
     public void setMotor(double mps) {
         m_shooterPIDL.setReference(-mps, ControlType.kVelocity);
         m_shooterPIDR.setReference(mps, ControlType.kVelocity);
-    } 
+    }
+
+    public DoubleSupplier[] getVelocity() {
+        return new DoubleSupplier[] { () -> { return m_shooterEncoderL.getVelocity(); }, () -> { return m_shooterEncoderR.getVelocity(); } };
+    }
 }

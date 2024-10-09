@@ -4,17 +4,25 @@
 
 package frc.robot.subsystems.notePipeline;
 
-import com.revrobotics.CANSparkFlex;
+import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class NotePipelineSubsystem extends SubsystemBase {
+import frc.robot.subsystems.Subsystem;
+
+public class NotePipelineSubsystem extends Subsystem {
   private final Feeder m_feeder = new Feeder();
   private final Shooter m_shooter = new Shooter();
   private final Intake m_intake = new Intake();
 
+  private final DoubleSupplier m_feederVel = m_feeder.getVelocity();
+  private final DoubleSupplier m_intakeVel = m_intake.getVelocity();
+  private final DoubleSupplier[] m_shooterVels = m_shooter.getVelocity();
+
   /** Creates a new NotePipelineSubsystem. */
-  public NotePipelineSubsystem() {}
+  public NotePipelineSubsystem() {
+    super("Note Pipeline Subsystem");
+  }
 
   private static NotePipelineSubsystem m_instance;
   public static NotePipelineSubsystem getInstance() {
@@ -32,7 +40,16 @@ public class NotePipelineSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void periodic() {}
+
+  public void dashboardInit() {}
+  public void publishInit() {}
+  public void publishPeriodic() {}
+
+  public void dashboardPeriodic() {
+    SmartDashboard.putNumber("Left Shooter Vel", m_shooterVels[0].getAsDouble());
+    SmartDashboard.putNumber("Right Shooter Vel", m_shooterVels[1].getAsDouble());
+    SmartDashboard.putNumber("Intake Vel", m_intakeVel.getAsDouble());
+    SmartDashboard.putNumber("Feeder Vel", m_feederVel.getAsDouble());
   }
 }
