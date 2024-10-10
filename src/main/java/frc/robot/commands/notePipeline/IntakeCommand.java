@@ -2,21 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.notePipeline;
 
-import java.util.function.DoubleSupplier;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer.subsystems;
 
-public class NotePipelineCommand extends Command {
-  private DoubleSupplier m_mps;
+public class IntakeCommand extends Command {
+  private final BooleanSupplier m_cancel;
+  
+  /** Creates a new IntakeCommand. */
+  public IntakeCommand(BooleanSupplier cancel) {
+    m_cancel = cancel;
 
-  /** Creates a new NotePipelineCommand. */
-  public NotePipelineCommand(DoubleSupplier mps) {
-    m_mps = mps;
-
-    addRequirements(subsystems.notePipeline);
+    addRequirements(subsystems.intake, subsystems.feeder);
   }
 
   // Called when the command is initially scheduled.
@@ -25,14 +25,12 @@ public class NotePipelineCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    subsystems.notePipeline.run(m_mps.getAsDouble());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    subsystems.notePipeline.run(0);
+    subsystems.intake.stop();
   }
 
   // Returns true when the command should end.

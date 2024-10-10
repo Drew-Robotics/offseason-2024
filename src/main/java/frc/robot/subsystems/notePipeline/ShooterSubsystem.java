@@ -1,21 +1,30 @@
 package frc.robot.subsystems.notePipeline;
 
-import java.util.function.DoubleSupplier;
-
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.NotePipelineConstants.CANIDs;
 
-public class Shooter {
+public class ShooterSubsystem extends PipelineSubsystem {
     private final CANSparkFlex m_shooterMotorL, m_shooterMotorR;
     private final SparkPIDController m_shooterPIDL, m_shooterPIDR;
     private final RelativeEncoder m_shooterEncoderL, m_shooterEncoderR;
 
-    public Shooter() {
+    private static ShooterSubsystem m_instance;
+
+    public static ShooterSubsystem getInstance() {
+        if (m_instance == null)
+            m_instance = new ShooterSubsystem();
+        return m_instance;
+    }
+
+    public ShooterSubsystem() {
+        super(ShooterSubsystem.class.getSimpleName());
+
         m_shooterMotorL = new CANSparkFlex(CANIDs.kShooterLeft, MotorType.kBrushless);
         m_shooterEncoderL = m_shooterMotorL.getEncoder();
         m_shooterPIDL = m_shooterMotorL.getPIDController();
@@ -31,12 +40,14 @@ public class Shooter {
      * 
      * @param mps set the motors to a speed in meters per second
      */
-    public void setMotor(double mps) {
+    public void run(double mps) {
         m_shooterPIDL.setReference(-mps, ControlType.kVelocity);
         m_shooterPIDR.setReference(mps, ControlType.kVelocity);
     }
 
-    public DoubleSupplier[] getVelocity() {
-        return new DoubleSupplier[] { () -> { return m_shooterEncoderL.getVelocity(); }, () -> { return m_shooterEncoderR.getVelocity(); } };
+    @Override
+    protected void dashboardPeriodic() {
+        SmartDashboard.putNumber("Left Shooter Velocity", m_shooterEncoderL.getVelocity());
+        SmartDashboard.putNumber("Right Shooter Velocity", m_shooterEncoderR.getVelocity());
     }
 }
