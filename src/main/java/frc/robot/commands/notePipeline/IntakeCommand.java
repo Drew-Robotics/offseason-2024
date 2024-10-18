@@ -4,19 +4,14 @@
 
 package frc.robot.commands.notePipeline;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.NotePipelineConstants.MotorSpeeds;
 import frc.robot.RobotContainer.subsystems;
 
 public class IntakeCommand extends Command {
-  private final BooleanSupplier m_run;
   
   /** Creates a new IntakeCommand. */
-  public IntakeCommand(BooleanSupplier run) {
-    m_run = run;
-
+  public IntakeCommand() {
     addRequirements(subsystems.intake, subsystems.feeder);
   }
 

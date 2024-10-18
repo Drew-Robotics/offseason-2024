@@ -2,8 +2,6 @@ package frc.robot.subsystems.notePipeline;
 
 import com.revrobotics.CANSparkBase.ControlType;
 
-import java.util.function.BooleanSupplier;
-
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 import com.revrobotics.CANSparkFlex;
@@ -12,7 +10,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.NotePipelineConstants;
 import frc.robot.Constants.NotePipelineConstants.CANIDs;
 import frc.robot.Constants.NotePipelineConstants.Sensor;
 

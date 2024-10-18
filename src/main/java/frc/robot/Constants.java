@@ -193,11 +193,11 @@ public class Constants {
     }
 
     public static final class CANIDs {
-      public static final int kShooterLeft = 0;
-      public static final int kShooterRight = 0;
-      public static final int kIntake = 0;
-      public static final int kFeeder = 0;
-      public static final int kSensor = 0;
+      public static final int kShooterLeft = 20;
+      public static final int kShooterRight = 21;
+      public static final int kIntake = 31;
+      public static final int kFeeder = 30;
+      public static final int kSensor = 0; // <--- need canid for this !!!!! 
     }
 
     public static final class MotorSpeeds {

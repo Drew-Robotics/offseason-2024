@@ -1,7 +1,5 @@
 package frc.robot.controllers;
 
-import java.util.function.DoubleSupplier;
-
 import frc.robot.Constants.OIConstants;
 
 public class OperatorController extends Controller {
