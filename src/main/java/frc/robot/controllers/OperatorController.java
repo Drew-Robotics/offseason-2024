@@ -21,4 +21,12 @@ public class OperatorController extends Controller {
   public double getNotePipelineMPS() {
     return getRightTriggerAxis();
   }
+
+  public boolean getShooting() {
+    return b().getAsBoolean();
+  }
+
+  public boolean getReving() {
+    return rightBumper().getAsBoolean();
+  }
 }

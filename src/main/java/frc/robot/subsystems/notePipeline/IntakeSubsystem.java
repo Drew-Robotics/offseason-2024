@@ -31,7 +31,7 @@ public class IntakeSubsystem extends PipelineSubsystem {
         m_intakePID.setFeedbackDevice(m_intakeEncoder);
     }
 
-    public void run(double mps) {
+    public void set(double mps) {
         m_intakePID.setReference(mps, ControlType.kVelocity);
     }
 

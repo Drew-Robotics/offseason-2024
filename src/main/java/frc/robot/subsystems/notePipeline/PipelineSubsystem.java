@@ -7,8 +7,8 @@ public abstract class PipelineSubsystem extends Subsystem {
         super(name);
     }
 
-    public abstract void run(double mps);
-    public void stop() { run(0); }
+    public abstract void set(double mps);
+    public void stop() { set(0); }
 
     @Override
     protected void dashboardInit() {}

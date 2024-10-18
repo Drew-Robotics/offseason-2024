@@ -187,11 +187,25 @@ public class Constants {
   }
 
   public static final class NotePipelineConstants {
+    public static final class Sensor {
+      public static final double noteRange = 20; // distance in which a note will be detected, in millimeters
+      public static final double checkTime = 75; // how frequently the sensor updates, in milliseconds
+    }
+
     public static final class CANIDs {
       public static final int kShooterLeft = 0;
       public static final int kShooterRight = 0;
       public static final int kIntake = 0;
       public static final int kFeeder = 0;
+      public static final int kSensor = 0;
+    }
+
+    public static final class MotorSpeeds {
+      public static final double shooterFeed = 1;
+      public static final double shooterRev = 2;
+
+      public static final double intake = 2;
+      public static final double feeder = 1;
     }
   }
 }

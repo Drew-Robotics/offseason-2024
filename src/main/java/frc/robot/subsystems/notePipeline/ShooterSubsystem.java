@@ -40,7 +40,7 @@ public class ShooterSubsystem extends PipelineSubsystem {
      * 
      * @param mps set the motors to a speed in meters per second
      */
-    public void run(double mps) {
+    public void set(double mps) {
         m_shooterPIDL.setReference(-mps, ControlType.kVelocity);
         m_shooterPIDR.setReference(mps, ControlType.kVelocity);
     }

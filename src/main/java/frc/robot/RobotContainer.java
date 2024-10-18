@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.notePipeline.ShooterCommand;
+import frc.robot.commands.notePipeline.ShooterRevCommand;
 import frc.robot.controllers.DriverController;
 import frc.robot.controllers.OperatorController;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -61,6 +63,14 @@ public class RobotContainer {
         controllers.driver::getXVelocity, 
         controllers.driver::getYVelocity, 
         controllers.driver::getRotationalVelocity)
+    );
+
+    subsystems.feeder.setDefaultCommand( 
+      new ShooterCommand(controllers.operator::getShooting)
+    );
+
+    subsystems.shooter.setDefaultCommand( 
+      new ShooterRevCommand(controllers.operator::getReving)
     );
   }
 
