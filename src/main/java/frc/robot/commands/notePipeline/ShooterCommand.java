@@ -25,7 +25,7 @@ public class ShooterCommand extends Command {
   public void execute() {
     if (m_shoot.getAsBoolean()) {
       subsystems.feeder.set(MotorSpeeds.shooterFeed); // Feeds the note into the reving shooter
-      subsystems.feeder.intook(subsystems.feeder.hasNote());
+      subsystems.feeder.intook(subsystems.feeder.hasNote()); // Updates if it has intook based on if a note was detected
     } else subsystems.feeder.stop();
   }
 }

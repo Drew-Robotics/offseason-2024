@@ -55,6 +55,6 @@ public class FeederSubsystem extends PipelineSubsystem {
     @Override
     protected void dashboardPeriodic() {
         SmartDashboard.putNumber("Feeder Velocity", m_feederEncoder.getVelocity());
-        SmartDashboard.putBoolean("Intook?", m_intook);
+        SmartDashboard.putBoolean("Intook", m_intook);
     }
 }
