@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.NotePipelineConstants;
 import frc.robot.Constants.NotePipelineConstants.CANIDs;
 import frc.robot.Constants.NotePipelineConstants.Sensor;
 
@@ -34,9 +35,16 @@ public class FeederSubsystem extends PipelineSubsystem {
         super(FeederSubsystem.class.getSimpleName());
 
         m_feederMotor = new CANSparkFlex(CANIDs.kFeeder, MotorType.kBrushless);
+
         m_feederEncoder = m_feederMotor.getEncoder();
+        m_feederEncoder.setPositionConversionFactor(NotePipelineConstants.kEncoderPositionFactor);
+        m_feederEncoder.setPositionConversionFactor(NotePipelineConstants.kEncoderVelocityFactor);
+
         m_feederPID = m_feederMotor.getPIDController();
         m_feederPID.setFeedbackDevice(m_feederEncoder);
+        m_feederPID.setP(0.01);
+        m_feederPID.setI(0);
+        m_feederPID.setD(0);
 
         m_sensor.setRangingMode(RangingMode.Short, Sensor.checkTime);
     }

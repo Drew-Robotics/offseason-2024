@@ -11,19 +11,27 @@ import frc.robot.Constants.NotePipelineConstants.MotorSpeeds;
 import frc.robot.RobotContainer.subsystems;
 
 public class ShooterRevCommand extends Command {
-  private final BooleanSupplier m_reving;
 
   /** Creates a new ShooterRevCommand. */
-  public ShooterRevCommand(BooleanSupplier reving) {
-    m_reving = reving;
-    
+  public ShooterRevCommand() {
     addRequirements(subsystems.shooter);
+  }
+
+  @Override
+  public void initialize() {
+    subsystems.shooter.set(MotorSpeeds.shooterRev);
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    subsystems.shooter.set(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_reving.getAsBoolean()) subsystems.shooter.set(MotorSpeeds.shooterRev);
-    else subsystems.shooter.stop(); // revs the shooter
+    // System.out.println(m_reving.getAsBoolean());
+    // if (m_reving.getAsBoolean()) subsystems.shooter.setRaw(MotorSpeeds.shooterRev);
+    // else subsystems.shooter.stop(); // revs the shooter
   }
 }

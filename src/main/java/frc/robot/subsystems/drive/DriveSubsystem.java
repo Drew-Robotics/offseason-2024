@@ -41,6 +41,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.RobotContainer.subsystems;
 import frc.robot.subsystems.Subsystem;
@@ -85,14 +86,18 @@ public class DriveSubsystem extends Subsystem {
       DriveConstants.CanIDs.kFrontLeftDriving,
       DriveConstants.CanIDs.kFrontLeftTurning,
       DriveConstants.AngularOffsets.kFrontLeft,
-      m_table.getSubTable("SwerveModules")
+      m_table.getSubTable("SwerveModules"),
+      SwerveConstants.DrivingInverted.kFrontLeft,
+      SwerveConstants.TurningInverted.kFrontLeft
     );
     m_frontRight = new SwerveModule(
       "Front Right",
       DriveConstants.CanIDs.kFrontRightDriving,
       DriveConstants.CanIDs.kFrontRightTurning,
       DriveConstants.AngularOffsets.kFrontRight,
-      m_table.getSubTable("SwerveModules")
+      m_table.getSubTable("SwerveModules"),
+      SwerveConstants.DrivingInverted.kFrontRight,
+      SwerveConstants.TurningInverted.kFrontRight
 
     );
     m_backLeft = new SwerveModule(
@@ -100,14 +105,18 @@ public class DriveSubsystem extends Subsystem {
       DriveConstants.CanIDs.kBackLeftDriving,
       DriveConstants.CanIDs.kBackLeftTurning,
       DriveConstants.AngularOffsets.kBackLeft,
-      m_table.getSubTable("SwerveModules")
+      m_table.getSubTable("SwerveModules"),
+      SwerveConstants.DrivingInverted.kBackLeft,
+      SwerveConstants.TurningInverted.kBackLeft
     );
     m_backRight = new SwerveModule(
       "Back Right",
       DriveConstants.CanIDs.kBackRightDriving,
       DriveConstants.CanIDs.kBackRightTurning,
       DriveConstants.AngularOffsets.kBackRight,
-      m_table.getSubTable("SwerveModules")
+      m_table.getSubTable("SwerveModules"),
+      SwerveConstants.DrivingInverted.kBackRight,
+      SwerveConstants.TurningInverted.kBackRight
     );
 
     m_modules = new SwerveModule[] {m_frontLeft, m_frontRight, m_backLeft, m_backRight};
@@ -125,7 +134,7 @@ public class DriveSubsystem extends Subsystem {
   public void periodic() {
     super.periodic();
     m_poseEstimator.update(getGyroYaw(), getModulePositions());
-    updateVisionPoseEstimation();
+    // updateVisionPoseEstimation();
   }
 
   /**

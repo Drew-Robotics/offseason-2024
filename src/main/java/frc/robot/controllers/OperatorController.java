@@ -1,5 +1,6 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 
 public class OperatorController extends Controller {
@@ -24,7 +25,11 @@ public class OperatorController extends Controller {
     return b().getAsBoolean();
   }
 
-  public boolean getReving() {
-    return rightBumper().getAsBoolean();
+  public Trigger getRevingTrigger() {
+    return rightBumper();
+  }
+
+  public Trigger getShootingTrigger() {
+    return a();
   }
 }

@@ -64,7 +64,7 @@ public class SwerveModule {
    * @param angularOffset The angle offset of the module
    * @param superTable The network table for the module to publish its table under
    */
-  public SwerveModule(String moduleName, int driveMotorCanID, int turningMotorCanID, Rotation2d angularOffset, NetworkTable superTable) {
+  public SwerveModule(String moduleName, int driveMotorCanID, int turningMotorCanID, Rotation2d angularOffset, NetworkTable superTable, boolean drivingMotorInverted, boolean turningMotorInverted) {
     m_moduleName = moduleName;
 
     m_angularOffset = angularOffset;
@@ -132,6 +132,9 @@ public class SwerveModule {
     // current limits
     m_driveMotor.setSmartCurrentLimit((int) SwerveConstants.kDrivingMotorCurrentLimit.in(Units.Volts));
     m_turningMotor.setSmartCurrentLimit((int) SwerveConstants.kTurningMotorCurrentLimit.in(Units.Volts));
+
+    m_driveMotor.setInverted(drivingMotorInverted);
+    m_turningMotor.setInverted(turningMotorInverted);
 
     m_driveMotor.burnFlash();
     m_turningMotor.burnFlash();

@@ -18,7 +18,6 @@ import edu.wpi.first.units.*;
 
 public class Constants {
 
-
   public static final class DriveConstants {
 
     public static final Measure<Distance> kWheelBase = Units.Inches.of(24.5);
@@ -85,6 +84,19 @@ public class Constants {
   }
 
   public static final class SwerveConstants {
+    public static final class DrivingInverted {
+      public static final boolean kFrontLeft = false;
+      public static final boolean kFrontRight = false;
+      public static final boolean kBackLeft = false;
+      public static final boolean kBackRight = false;
+    }
+    
+    public static final class TurningInverted {
+      public static final boolean kFrontLeft = false;
+      public static final boolean kFrontRight = false;
+      public static final boolean kBackLeft = false;
+      public static final boolean kBackRight = false;
+    }
 
     public static final class DrivingPID {
       public static final double kP = 0.05;
@@ -175,7 +187,7 @@ public class Constants {
     }
   }
 
-  public static final class OIConstants {
+  public static final class OIConstants { // eerrrm acksually itz IO
     public static final class DriverController {
       public static final int kPort = 0;
       public static final double kDriveDeadband = 0.05;
@@ -187,6 +199,9 @@ public class Constants {
   }
 
   public static final class NotePipelineConstants {
+    public static final double kEncoderPositionFactor = 7168;
+    public static final double kEncoderVelocityFactor = kEncoderPositionFactor / 60;
+
     public static final class Sensor {
       public static final double noteRange = 20; // distance in which a note will be detected, in millimeters
       public static final double checkTime = 75; // how frequently the sensor updates, in milliseconds
@@ -201,11 +216,11 @@ public class Constants {
     }
 
     public static final class MotorSpeeds {
-      public static final double shooterFeed = 1;
-      public static final double shooterRev = 2;
+      public static final double shooterFeed = 0.1;
+      public static final double shooterRev = 1;
 
-      public static final double intake = 2;
-      public static final double feeder = 1;
+      public static final double intake = 0.1;
+      public static final double feeder = 0.1;
     }
   }
 }
