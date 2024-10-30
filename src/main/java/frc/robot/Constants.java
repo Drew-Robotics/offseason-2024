@@ -199,7 +199,12 @@ public class Constants {
   }
 
   public static final class NotePipelineConstants {
-    public static final double kEncoderPositionFactor = 7168;
+
+    public static final double kWheelRadius = 0.05;
+    
+    public static final double kEncoderPulsesPerRotation = 7168;
+    
+    public static final double kEncoderPositionFactor = 2 * Math.PI * kWheelRadius;
     public static final double kEncoderVelocityFactor = kEncoderPositionFactor / 60;
 
     public static final class Sensor {
@@ -217,7 +222,7 @@ public class Constants {
 
     public static final class MotorSpeeds {
       public static final double shooterFeed = 0.1;
-      public static final double shooterRev = 1;
+      public static final double shooterRev = 10;
 
       public static final double intake = 0.1;
       public static final double feeder = 0.1;

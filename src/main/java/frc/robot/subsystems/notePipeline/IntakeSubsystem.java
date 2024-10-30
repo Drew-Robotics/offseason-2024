@@ -34,9 +34,10 @@ public class IntakeSubsystem extends PipelineSubsystem {
 
         m_intakePID = m_intakeMotor.getPIDController();
         m_intakePID.setFeedbackDevice(m_intakeEncoder);
-        m_intakePID.setP(0.01);
-        m_intakePID.setI(0);
-        m_intakePID.setD(0);
+        m_intakePID.setP(0.1);
+        m_intakePID.setI(0.0);
+        m_intakePID.setD(0.0);
+        m_intakePID.setFF(0.03); // 6784
     }
 
     public void set(double mps) {
