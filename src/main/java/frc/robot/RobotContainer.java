@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.notePipeline.EjectNoteCommand;
 import frc.robot.commands.notePipeline.IntakeCommand;
 import frc.robot.commands.notePipeline.ShooterCommand;
 import frc.robot.commands.notePipeline.ShooterRevCommand;
@@ -68,13 +69,15 @@ public class RobotContainer {
         controllers.driver::getRotationalVelocity)
     );
 
-    controllers.operator.b().onTrue(new IntakeCommand());
+    controllers.operator.getIntakeTrigger().onTrue(new IntakeCommand());
 
     controllers.operator.getShootingTrigger().whileTrue(new ShooterCommand());
 
     // controllers.operator.a().whileTrue(new RunCommand(() -> {subsystems.shooter.setRaw(1);}));
     // controllers.operator.a().whileFalse(new RunCommand(() -> {subsystems.shooter.setRaw(0);}));
     controllers.operator.getRevingTrigger().whileTrue(new ShooterRevCommand());
+
+    controllers.operator.getEjectTrigger().whileTrue(new EjectNoteCommand());
   }
 
   public Command getAutonomousCommand() {

@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.NotePipelineConstants;
 import frc.robot.Constants.NotePipelineConstants.CANIDs;
+import frc.robot.Constants.NotePipelineConstants.PID;
 
 public class IntakeSubsystem extends PipelineSubsystem {
     private final CANSparkFlex m_intakeMotor;
@@ -25,27 +26,28 @@ public class IntakeSubsystem extends PipelineSubsystem {
 
     public IntakeSubsystem() {
         super(IntakeSubsystem.class.getSimpleName());
-
         m_intakeMotor = new CANSparkFlex(CANIDs.kIntake, MotorType.kBrushless);
+        m_intakeMotor.setInverted(true);
 
         m_intakeEncoder = m_intakeMotor.getEncoder();
-        m_intakeEncoder.setPositionConversionFactor(NotePipelineConstants.kEncoderPositionFactor);
-        m_intakeEncoder.setPositionConversionFactor(NotePipelineConstants.kEncoderVelocityFactor);
+        m_intakeEncoder.setPositionConversionFactor(NotePipelineConstants.kIntakePositionFactor);
+        m_intakeEncoder.setVelocityConversionFactor(NotePipelineConstants.kIntakeVelocityFactor);
 
         m_intakePID = m_intakeMotor.getPIDController();
-        m_intakePID.setFeedbackDevice(m_intakeEncoder);
-        m_intakePID.setP(0.1);
-        m_intakePID.setI(0.0);
-        m_intakePID.setD(0.0);
-        m_intakePID.setFF(0.03); // 6784
+        m_intakePID.setP(PID.Intake.kP);
+        m_intakePID.setI(PID.Intake.kI);
+        m_intakePID.setD(PID.Intake.kD);
+        m_intakePID.setFF(PID.Intake.kFF);
     }
 
     public void set(double mps) {
+        SmartDashboard.putNumber("Intake Target Velocity", mps);
         m_intakePID.setReference(mps, ControlType.kVelocity);
     }
 
     @Override
     protected void dashboardPeriodic() {
         SmartDashboard.putNumber("Intake Velocity", m_intakeEncoder.getVelocity());
+        SmartDashboard.putNumber("Intake Position", m_intakeEncoder.getPosition());
     }
 }

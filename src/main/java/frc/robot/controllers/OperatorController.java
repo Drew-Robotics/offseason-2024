@@ -29,7 +29,15 @@ public class OperatorController extends Controller {
     return rightBumper();
   }
 
+  public Trigger getEjectTrigger() {
+    return x();
+  }
+
   public Trigger getShootingTrigger() {
     return a();
+  }
+
+  public Trigger getIntakeTrigger() {
+    return b();
   }
 }
