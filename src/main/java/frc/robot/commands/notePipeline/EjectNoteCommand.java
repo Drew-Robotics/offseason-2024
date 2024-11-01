@@ -17,8 +17,8 @@ public class EjectNoteCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    subsystems.feeder.set(MotorSpeeds.ShooterEject.feeder);
-    subsystems.intake.set(MotorSpeeds.ShooterEject.intake);
+    subsystems.feeder.set(MotorSpeeds.ShooterEject.feeder * -1);
+    subsystems.intake.set(MotorSpeeds.ShooterEject.intake * -1);
   }
 
   // Called once the command ends or is interrupted.

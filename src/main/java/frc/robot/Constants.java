@@ -253,7 +253,7 @@ public class Constants {
       public static final double shooterFeed = 0.1;
       public static final double shooterRev = 40;
 
-      public static final double intake = 5;
+      public static final double intake = 7;
       public static final double feeder = 1.5;
 
       public static final class ShooterEject {
