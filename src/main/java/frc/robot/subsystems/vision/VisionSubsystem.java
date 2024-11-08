@@ -7,6 +7,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,6 @@ import org.photonvision.EstimatedRobotPose;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Subsystem;
-import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class VisionSubsystem extends Subsystem {
   private final NetworkTable m_table;
@@ -39,7 +39,7 @@ public class VisionSubsystem extends Subsystem {
 
   private VisionSubsystem() {
     super(VisionSubsystem.class.getSimpleName());
-    m_table = NetworkTableInstance.getDefault().getTable(DriveSubsystem.class.getSimpleName());
+    m_table = NetworkTableInstance.getDefault().getTable(VisionSubsystem.class.getSimpleName());
 
     m_frontLeft = new Camera(VisionConstants.CameraNames.kFrontLeft, VisionConstants.CameraTransforms.kFrontLeft);  
     m_frontRight = new Camera(VisionConstants.CameraNames.kFrontRight, VisionConstants.CameraTransforms.kFrontRight);
@@ -63,12 +63,11 @@ public class VisionSubsystem extends Subsystem {
   @Override
   public void dashboardPeriodic() {}
   @Override
-  public void publishInit() {
-    AprilTag[] tags = (AprilTag[]) Constants.VisionConstants.AprilTags.kTags.toArray();
-    m_logger.fieldTagsPublisher.accept(tags);
-  }
+  public void publishInit() {}
   @Override
   public void publishPeriodic() {
+    AprilTag[] tags = Constants.VisionConstants.AprilTags.kTags.toArray(AprilTag[]::new);
+    m_logger.fieldTagsPublisher.accept(tags);
     // m_logger.seenTagsPublisher.accept(); // todo : finish this
   }
 

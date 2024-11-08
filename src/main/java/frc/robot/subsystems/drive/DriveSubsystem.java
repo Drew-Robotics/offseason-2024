@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.estimation.VisionEstimation;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -252,14 +253,15 @@ public class DriveSubsystem extends Subsystem {
    */
   public void updateVisionPoseEstimation() {
     List<Optional<EstimatedRobotPose>> estimatedPoses = subsystems.vision.getCameraEstimatedPoses();
-    List<Optional<Matrix<N3, N1>>> stdDevs = subsystems.vision.getPoseStdDevs(estimatedPoses);
+    List<Optional<Matrix<N3, N1>>> stdDevs = subsystems.vision.getPoseStdDevs(estimatedPoses)
 
     for (int poseIndex = 0; poseIndex < estimatedPoses.size(); poseIndex++) {
       Optional<EstimatedRobotPose> poseOptional = estimatedPoses.get(poseIndex);
       Optional<Matrix<N3, N1>> stdDevsOptional = stdDevs.get(poseIndex);
 
-      if(!poseOptional.isPresent())
+      if(!poseOptional.isPresent()){
         continue;
+      }
       
       EstimatedRobotPose pose = poseOptional.get();
       Matrix<N3, N1> stdDev = stdDevsOptional.get();
@@ -277,11 +279,15 @@ public class DriveSubsystem extends Subsystem {
   public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
     pose = new Pose2d(pose.getTranslation(), pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
 
+    System.out.println("addVisionMeasurement");
+    m_logger.visionPoseEstimPublisher.set(pose);
+
     if(pose.getX() < 0 || pose.getY() < 0)
       return;
     if(pose.getX() > VisionConstants.kAprilTagLayout.getFieldLength() || pose.getY() > VisionConstants.kAprilTagLayout.getFieldWidth())
       return;
-
+    
+    System.out.println(timestamp);
     m_poseEstimator.addVisionMeasurement(pose, timestamp, stdDevs);
   }
 
