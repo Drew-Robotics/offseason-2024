@@ -52,12 +52,12 @@ public class FeederSubsystem extends PipelineSubsystem {
     }
 
     public void set(double mps) {
-        SmartDashboard.putNumber("Feeder Target Velocity", mps);
+        // SmartDashboard.putNumber("Feeder Target Velocity", mps);
         m_feederPID.setReference(mps, ControlType.kVelocity);
     }
 
     public boolean hasNote() {
-        return m_sensor.getRange() >= Sensor.noteRange;
+        return m_sensor.getRange() <= Sensor.noteRange;
     }
 
     public boolean hasIntook() { return m_intook; }
@@ -67,6 +67,7 @@ public class FeederSubsystem extends PipelineSubsystem {
     protected void dashboardPeriodic() {
         SmartDashboard.putNumber("Feeder Velocity", m_feederEncoder.getVelocity());
         SmartDashboard.putNumber("Feeder Position", m_feederEncoder.getPosition());
+        SmartDashboard.putNumber("Sensor Distance", m_sensor.getRange());
         SmartDashboard.putBoolean("Intook", m_intook);
     }
 }

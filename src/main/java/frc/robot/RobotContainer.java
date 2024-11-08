@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.notePipeline.EjectNoteCommand;
 import frc.robot.commands.notePipeline.IntakeCommand;
-import frc.robot.commands.notePipeline.ShooterCommand;
+import frc.robot.commands.notePipeline.FeedShooterCommand;
 import frc.robot.commands.notePipeline.ShooterRevCommand;
 import frc.robot.controllers.DriverController;
 import frc.robot.controllers.OperatorController;
@@ -66,9 +66,9 @@ public class RobotContainer {
         controllers.driver::getRotationalVelocity)
     );
 
-    controllers.operator.getIntakeTrigger().onTrue(new IntakeCommand());
+    controllers.operator.getIntakeTrigger().whileTrue(new IntakeCommand());//.andThen(new EjectNoteCommand().withTimeout(0.75)));
 
-    controllers.operator.getShootingTrigger().whileTrue(new ShooterCommand());
+    controllers.operator.getFeedingShooter().whileTrue(new FeedShooterCommand());
 
     controllers.operator.getRevingTrigger().whileTrue(new ShooterRevCommand());
 

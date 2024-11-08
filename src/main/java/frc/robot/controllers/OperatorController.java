@@ -21,10 +21,6 @@ public class OperatorController extends Controller {
     return getRightTriggerAxis();
   }
 
-  public boolean getShooting() {
-    return b().getAsBoolean();
-  }
-
   public Trigger getRevingTrigger() {
     return rightBumper();
   }
@@ -33,7 +29,7 @@ public class OperatorController extends Controller {
     return x();
   }
 
-  public Trigger getShootingTrigger() {
+  public Trigger getFeedingShooter() {
     return a();
   }
 

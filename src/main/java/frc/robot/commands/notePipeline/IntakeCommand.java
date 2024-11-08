@@ -25,18 +25,18 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    subsystems.feeder.stop();
     subsystems.intake.stop();
-    subsystems.shooter.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (subsystems.feeder.hasNote()) {  // stops when the sensor detects a note or the cancel button is pressed, and sets intook to true
-      subsystems.feeder.intook(true);
-      return true;
-    } else {
-      return false;
-    }
+    return subsystems.feeder.hasNote();
+    // if (subsystems.feeder.hasNote()) {  // stops when the sensor detects a note or the cancel button is pressed, and sets intook to true
+    //   return true;
+    // } else {
+    //   return false;
+    // }
   }
 }
