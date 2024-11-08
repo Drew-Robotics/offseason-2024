@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
     }
 
     String autoName = m_robotContainer.getAutonomousName();
-    System.out.println(autoName + " this is a test i want to make this message long so its eaiser to find so ima just keep typing and typing");
+    System.out.println(autoName + " this is a test i want to make this message long so its eaiser to find so ima just keep typing and typing. Why did you stop typing? What is this quiters mentailty??? How DARE you stop at purely that. Pathetic. You could have typed for at least another 20 minutes straight without negtive physical effects on your body.");
     Pose2d startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
 
     subsystems.drive.setGyroOffset(startingPose.getRotation());

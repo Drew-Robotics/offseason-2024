@@ -13,12 +13,10 @@ import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.notePipeline.EjectNoteCommand;
 import frc.robot.commands.notePipeline.IntakeCommand;
-import frc.robot.commands.notePipeline.ShooterCommand;
+import frc.robot.commands.notePipeline.FeedShooterCommand;
 import frc.robot.commands.notePipeline.ShooterRevCommand;
 import frc.robot.controllers.DriverController;
 import frc.robot.controllers.OperatorController;
@@ -68,13 +66,13 @@ public class RobotContainer {
         controllers.driver::getRotationalVelocity)
     );
 
-    controllers.operator.b().onTrue(new IntakeCommand());
+    controllers.operator.getIntakeTrigger().whileTrue(new IntakeCommand());//.andThen(new EjectNoteCommand().withTimeout(0.75)));
 
-    controllers.operator.getShootingTrigger().whileTrue(new ShooterCommand());
+    controllers.operator.getFeedingShooter().whileTrue(new FeedShooterCommand());
 
-    // controllers.operator.a().whileTrue(new RunCommand(() -> {subsystems.shooter.setRaw(1);}));
-    // controllers.operator.a().whileFalse(new RunCommand(() -> {subsystems.shooter.setRaw(0);}));
     controllers.operator.getRevingTrigger().whileTrue(new ShooterRevCommand());
+
+    controllers.operator.getEjectTrigger().whileTrue(new EjectNoteCommand());
   }
 
   public Command getAutonomousCommand() {

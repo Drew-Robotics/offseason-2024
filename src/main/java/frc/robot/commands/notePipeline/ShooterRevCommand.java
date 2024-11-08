@@ -4,8 +4,6 @@
 
 package frc.robot.commands.notePipeline;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.NotePipelineConstants.MotorSpeeds;
 import frc.robot.RobotContainer.subsystems;

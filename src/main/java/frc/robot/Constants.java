@@ -25,7 +25,7 @@ public class Constants {
 
     public static final Boolean kGyroReversed = true;
 
-    public static final Boolean kFieldOriented = false;
+    public static final Boolean kFieldOriented = true;
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(DriveConstants.kWheelBase.divide(2), DriveConstants.kTrackWidth.divide(2)),
@@ -199,11 +199,22 @@ public class Constants {
   }
 
   public static final class NotePipelineConstants {
-    public static final double kEncoderPositionFactor = 7168;
-    public static final double kEncoderVelocityFactor = kEncoderPositionFactor / 60;
+
+    public static final double kFlyWheelRadius = 0.05;
+    public static final double kFeederWheelRadius = 0.025;
+    public static final double kIntakeWheelRadius = 0.019;
+    
+    public static final double kShooterPositionFactor = 2 * Math.PI * kFlyWheelRadius;
+    public static final double kShooterVelocityFactor = kShooterPositionFactor / 60;
+
+    public static final double kFeederPositionFactor = 2 * Math.PI * kFeederWheelRadius;
+    public static final double kFeederVelocityFactor = kFeederPositionFactor / 60;
+
+    public static final double kIntakePositionFactor = 2 * Math.PI * kIntakeWheelRadius;
+    public static final double kIntakeVelocityFactor = kIntakePositionFactor / 60;
 
     public static final class Sensor {
-      public static final double noteRange = 20; // distance in which a note will be detected, in millimeters
+      public static final double noteRange = 250; // distance in which a note will be detected, in millimeters
       public static final double checkTime = 75; // how frequently the sensor updates, in milliseconds
     }
 
@@ -212,15 +223,43 @@ public class Constants {
       public static final int kShooterRight = 21;
       public static final int kIntake = 31;
       public static final int kFeeder = 30;
-      public static final int kSensor = 0; // <--- need canid for this !!!!! 
+      public static final int kSensor = 40;
+    }
+
+    public static final class PID {
+      public static final class Shooter {
+        public static final double kP = 0.1;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kFF = 0.03;
+      }
+
+      public static final class Feeder {
+        public static final double kP = 0.1;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kFF = 0.077;
+      }
+
+      public static final class Intake {
+        public static final double kP = 0.1;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kFF = 0.105;
+      }
     }
 
     public static final class MotorSpeeds {
-      public static final double shooterFeed = 0.1;
-      public static final double shooterRev = 1;
+      public static final double shooterFeed = 3;
+      public static final double shooterRev = 30;
 
-      public static final double intake = 0.1;
-      public static final double feeder = 0.1;
+      public static final double intake = 0.5;
+      public static final double feeder = 0.7;
+
+      public static final class ShooterEject {
+        public static final double intake = 1;
+        public static final double feeder = 1;
+      }
     }
   }
 }

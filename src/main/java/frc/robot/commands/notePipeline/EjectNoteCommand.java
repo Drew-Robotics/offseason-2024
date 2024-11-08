@@ -8,35 +8,29 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.NotePipelineConstants.MotorSpeeds;
 import frc.robot.RobotContainer.subsystems;
 
-public class IntakeCommand extends Command {
-  
-  /** Creates a new IntakeCommand. */
-  public IntakeCommand() {
-    addRequirements(subsystems.intake, subsystems.feeder);
+public class EjectNoteCommand extends Command {
+  /** Creates a new EjectNoteCommand. */
+  public EjectNoteCommand() {
+    addRequirements(subsystems.feeder, subsystems.intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    subsystems.feeder.set(MotorSpeeds.feeder);
-    subsystems.intake.set(MotorSpeeds.intake);
+    subsystems.feeder.set(MotorSpeeds.ShooterEject.feeder * -1);
+    subsystems.intake.set(MotorSpeeds.ShooterEject.intake * -1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    subsystems.feeder.stop();
-    subsystems.intake.stop();
+    subsystems.feeder.set(0);
+    subsystems.intake.set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return subsystems.feeder.hasNote();
-    // if (subsystems.feeder.hasNote()) {  // stops when the sensor detects a note or the cancel button is pressed, and sets intook to true
-    //   return true;
-    // } else {
-    //   return false;
-    // }
+    return false;
   }
 }
