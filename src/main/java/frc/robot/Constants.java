@@ -251,14 +251,16 @@ public class Constants {
 
     public static final class MotorSpeeds {
       public static final double shooterFeed = 3;
-      public static final double shooterRev = 30;
+      public static final double shooterRev = 25;
+      public static final double alignNote = 4;
 
-      public static final double intake = 0.5;
-      public static final double feeder = 0.7;
+      public static final double intake = 3;
+      public static final double feeder = 1.5;
+      
 
       public static final class ShooterEject {
-        public static final double intake = 1;
-        public static final double feeder = 1;
+        public static final double intake = 3;
+        public static final double feeder = 3;
       }
     }
   }
