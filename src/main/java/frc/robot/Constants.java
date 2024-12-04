@@ -177,6 +177,12 @@ public class Constants {
     public static final class AprilTags {
     public static final List<AprilTag> kTags = List.of(
       new AprilTag(1, new Pose3d(5, 2, 1, new Rotation3d(0, 0, 180)))
+      // 1 (0,114,67) pos x
+      // 2 (106,0,69.5) pos y 
+      // 3 (251,175.25,65) neg x
+      // new AprilTag(1, new Pose3d(0     , 2.8956, 1.7018, new Rotation3d(0, 0, 180))),
+      // new AprilTag(2, new Pose3d(2.6924, 0      , 1.7653, new Rotation3d(0, 0, 180))),
+      // new AprilTag(3, new Pose3d(6.3754, 4.45135, 1.651, new Rotation3d(0, 0, 180)))
     );
     }
     public static final AprilTagFieldLayout kAprilTagLayout = new AprilTagFieldLayout(AprilTags.kTags, 10, 10);
