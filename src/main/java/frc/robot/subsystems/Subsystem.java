@@ -17,6 +17,7 @@ public abstract class Subsystem extends SubsystemBase {
     protected Subsystem(String name) {
         m_name = name;
         m_table = NetworkTableInstance.getDefault().getTable(m_name);
+        publishInit();
         dashboardInit();
     }
 
