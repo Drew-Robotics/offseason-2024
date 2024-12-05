@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -19,6 +20,9 @@ import frc.robot.subsystems.Subsystem;
 public class VisionSubsystem extends Subsystem {
   private final Camera m_frontLeft, m_frontRight, m_backLeft, m_backRight;
   private final List<Camera> m_cameras;
+
+  AprilTag[] m_tags = Constants.VisionConstants.AprilTags.kTags.toArray(AprilTag[]::new);;
+  Pose3d[] m_testPoeses;
 
   private VisionSubsystemLogger m_logger;
   private class VisionSubsystemLogger {
@@ -58,13 +62,11 @@ public class VisionSubsystem extends Subsystem {
   @Override
   public void dashboardPeriodic() {}
   @Override
-  public void publishInit() {
-    AprilTag[] tags = (AprilTag[]) Constants.VisionConstants.AprilTags.kTags.toArray();
-    m_logger.fieldTagsPublisher.accept(tags);
-  }
+  public void publishInit() {}
   @Override
   public void publishPeriodic() {
     // m_logger.seenTagsPublisher.accept(); // todo : finish this
+    m_logger.fieldTagsPublisher.accept(m_tags);
   }
 
   /* ----- VISION ------ */

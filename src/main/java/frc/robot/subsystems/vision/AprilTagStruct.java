@@ -3,7 +3,6 @@ package frc.robot.subsystems.vision;
 // EVERYTHING taken from this thread:
 // https://www.chiefdelphi.com/t/publishing-apriltags-for-advantagescope/455749/6
 
-
 import java.nio.ByteBuffer;
 
 import edu.wpi.first.apriltag.AprilTag;
