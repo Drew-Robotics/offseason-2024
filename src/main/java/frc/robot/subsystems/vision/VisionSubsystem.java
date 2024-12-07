@@ -2,10 +2,12 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,13 @@ public class VisionSubsystem extends Subsystem {
 
   AprilTag[] m_tags = Constants.VisionConstants.AprilTags.kTags.toArray(AprilTag[]::new);;
   Pose3d[] m_testPoeses;
+
+  private final List<String> m_cameraNames = List.of(
+    VisionConstants.CameraNames.kFrontLeft, 
+    VisionConstants.CameraNames.kFrontRight,
+    VisionConstants.CameraNames.kBackLeft,
+    VisionConstants.CameraNames.kBackRight
+  );
 
   private VisionSubsystemLogger m_logger;
   private class VisionSubsystemLogger {
@@ -46,7 +55,6 @@ public class VisionSubsystem extends Subsystem {
     m_backRight = new Camera(VisionConstants.CameraNames.kBackRight, VisionConstants.CameraTransforms.kBackRight);
 
     m_cameras = List.of(m_frontLeft, m_frontRight, m_backLeft, m_backRight);
-
     m_logger = new VisionSubsystemLogger();
   }
 
@@ -88,10 +96,16 @@ public class VisionSubsystem extends Subsystem {
 
         Optional<EstimatedRobotPose> poseOptional = poses.get(cameraIndex);
 
-        if(poseOptional.isPresent())
+        SmartDashboard.putBoolean(m_cameraNames.get(cameraIndex) + " Present", poseOptional.isPresent());
+
+        
+        if(poseOptional.isPresent()){
+          Pose2d pos = poseOptional.get().estimatedPose.toPose2d();
+          SmartDashboard.putString(m_cameraNames.get(cameraIndex) + " Pose", pos.toString());
           poseStdDevs.add(Optional.ofNullable(camera.getEstimationStdDevs(
             poseOptional.get().estimatedPose.toPose2d()
           )));
+        }
         else
           poseStdDevs.add(Optional.empty());
       }
