@@ -117,7 +117,7 @@ public class RobotContainer {
 
   public String getAutonomousName() {
     StringTopic activeAutoTopic = NetworkTableInstance.getDefault().getStringTopic("/SmartDashboard/Auto Chooser/active");
-    String activeAutoName = activeAutoTopic.getEntry("defaultValue", PubSubOption.sendAll(false)).get();
+    String activeAutoName = activeAutoTopic.getEntry("Super Cool Fast Awesome Auto", PubSubOption.sendAll(false)).get();
   
     return activeAutoName;
   }
