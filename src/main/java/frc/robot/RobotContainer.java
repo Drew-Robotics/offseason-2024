@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -14,7 +16,9 @@ import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.NotePipelineConstants.MotorSpeeds;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.notePipeline.AlignNoteCommand;
@@ -60,8 +64,20 @@ public class RobotContainer {
     autoChooser.setDefaultOption("DefaultAuto", AutoBuilder.buildAuto("DefaultAuto"));
 
     NamedCommands.registerCommand("intake", new IntakeCommand());
-    NamedCommands.registerCommand("startRevShooter", subsystems.shooter.set(MotorSpeeds.shooterRev));
-    NamedCommands.registerCommand("endRevShooter", subsystems.shooter.stop());
+    NamedCommands.registerCommand("startRevShooter", new FunctionalCommand(
+      () -> { subsystems.shooter.set(MotorSpeeds.shooterRev); },
+      () -> {},
+      ignore -> {},
+      () -> { return true; },
+      subsystems.shooter
+    ));
+    NamedCommands.registerCommand("endRevShooter", new FunctionalCommand(
+      () -> { subsystems.shooter.stop(); },
+      () -> {},
+      ignore -> {},
+      () -> { return true; },
+      subsystems.shooter
+    ));
     NamedCommands.registerCommand("feedShooter", new FeedShooterCommand());
 
     configureBindings();
