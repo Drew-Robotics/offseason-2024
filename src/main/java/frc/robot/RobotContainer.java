@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.NotePipelineConstants.MotorSpeeds;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.notePipeline.AlignNoteCommand;
 import frc.robot.commands.notePipeline.EjectNoteCommand;
@@ -56,6 +58,11 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     autoChooser.setDefaultOption("DefaultAuto", AutoBuilder.buildAuto("DefaultAuto"));
+
+    NamedCommands.registerCommand("intake", new IntakeCommand());
+    NamedCommands.registerCommand("startRevShooter", subsystems.shooter.set(MotorSpeeds.shooterRev));
+    NamedCommands.registerCommand("endRevShooter", subsystems.shooter.stop());
+    NamedCommands.registerCommand("feedShooter", new FeedShooterCommand());
 
     configureBindings();
   }

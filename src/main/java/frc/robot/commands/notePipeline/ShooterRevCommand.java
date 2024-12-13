@@ -22,7 +22,7 @@ public class ShooterRevCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    subsystems.shooter.set(0);
+    subsystems.shooter.stop();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
